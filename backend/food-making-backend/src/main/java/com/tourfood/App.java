@@ -26,7 +26,9 @@ public class App {
 			try {
 				doc = Jsoup.connect(currWebpage).userAgent(userAgent).get();
 			} catch (IOException e) {
-				e.printStackTrace(); // TODO не показывать стектрейс, а отображать ошибку, что не удалось связаться с сайтом
+				System.err.println("Не удалось связаться с веб-страницей «" + currWebpage + "».");
+				e.printStackTrace();
+				System.exit(1);
 			}
 			Elements products = doc.select(CSSselectorWorkzone).select(CSSSelectorProduct);
 
