@@ -13,21 +13,24 @@ import org.jsoup.select.Elements;
  */
 public class App {
     public static void main(String[] args) {
-	    String website = "https://yarcheplus.ru/catalog/ovoschi-i-frukty-187"; // TODO Получать каждую веб-страницу из https://yarcheplus.ru/
+    	String websiteDomain = "https://yarcheplus.ru";
+    	String website = websiteDomain + "/catalog/ovoschi-i-frukty-187"; // TODO Получать каждую веб-страницу из https://yarcheplus.ru/
 	    String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
-        String CSSselectorWorkzone = "#app-content > div > div:last-of-type > div:nth-of-type(2) > div:first-of-type > div:last-of-type > div:last-of-type > div:last-of-type > div:first-of-type";
-	    String CSSSelectorProduct = "> div > div"; // Почему нужно с «>»? Без него ничего не работает
+	    String CSSselectorWorkzone = "#app-content > div > div:last-of-type > div:nth-of-type(2) > div:first-of-type > div:last-of-type > div:last-of-type > div:last-of-type";
+	    String CSSselectorPagination = "> div:last-of-type > div:last-of-type > a:last-of-type";
+	    String CSSSelectorProduct = "> div:first-of-type > div > div"; // Почему нужно с «>»? Без него ничего не работает
 	    String CSSselectorProductTitle = "> div:nth-of-type(2) > div:nth-of-type(2) > div:first-of-type"; // Его содержимое типа: «Томаты Черри Делтари, 250&nbsp;г», «Чеснок молодой», «Чеснок 3 шт», «Лимоны поштучно, 0,1 - 0,3 кг», «Лайм 1 шт.», «Капуста белокочанная Свежий урожай поштучно, 1,2 - 4,5 кг», «Голубика», «Манго желтое, поштучно, 0,3 - 0,8 кг» (желтое и поштучно нужно будет убирать)
 	    String CSSselectorProductQuantity = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)"; // Содержимое здесь — это граммовка. Формат: «250 г» или «1 кг» или «1 шт.»
 	    String CSSselectorProductPrice = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:first-of-type"; // TODO ВНИМАНИЕ: захватывает только самую дешёвую цену (которая по скидке). В будущем захватывать обе цены для предоставления выбора пользователю. Формат: «169,99 ₽»
         Document doc = null;
+        
+        String currWebpage = new String(website);
         try {
-            doc = Jsoup.connect(website).userAgent(userAgent).get();
+            doc = Jsoup.connect(currWebpage).userAgent(userAgent).get();
         } catch (IOException e) {
 	        e.printStackTrace(); // TODO не показывать стектрейс, а отображать ошибку, что не удалось связаться с сайтом
         }
         Elements products = doc.select(CSSselectorWorkzone).select(CSSSelectorProduct);
-        doc = null;
         
         for (Element everyProduct : products) {
             String title = everyProduct.select(CSSselectorProductTitle).first().text();
@@ -44,6 +47,21 @@ public class App {
             
             // TODO Обработать то, что каждая из этих переменных может быть ПОЧЕМУ-ТО пустой
         }
+
+        // Пагинация
+        // TODO Костыльная. В будущем реализовать с помощью нажатия кнопки (`<button>`)
+        // Алгоритм: если новая ссылка отличается от текущей ссылки (если текущая ссылка НЕ первоначальная), то переходить на неё. Если ссылка такая же, как предыдущая, то это значитЫ, что эта веб-страница последняя в категории
+    	//    Если вообще никакой ссылки нет, то это значит, что изначально веб-страница одна
+        String nextPageLink = doc.select(CSSselectorWorkzone).select(CSSselectorPagination).first().attr("href");
+        // TODO ССЫЛКИ МОЖЕТ НЕ БЫТЬ, ЭТО ИСКЛЮЧЕНИЕ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        currWebpage = websiteDomain + new String(nextPageLink);
+        System.out.println(currWebpage);
+        
+        
+        
+        
+        
+        doc = null;
     }
     
     /**
