@@ -52,7 +52,7 @@ public class App {
 		// TODO В будущем оптимизировать (мб можно и без буферного списка)
 		
 		for (String categoryLink : categoriesList) {
-			currWebpage = websiteDomain + categoryLink;
+			currWebpage = categoryLink;
 			do {
 				try {
 					doc = Jsoup.connect(currWebpage).userAgent(userAgent).get();
@@ -67,14 +67,16 @@ public class App {
 					String title = everyProduct.select(CSSselectorProductTitle).first().text();
 					String quantity = everyProduct.select(CSSselectorProductQuantity).first().text();
 					String price = everyProduct.select(CSSselectorProductPrice).first().text(); // TODO Цена парсится за килограмм, а не за штуку
-					String measureRange = extractMeasureRange(title); // Примерная граммовка одной единицы товара (допустим, вес арбуза)
+					String[] titleArray = extractMeasureRange(title); // Примерная граммовка одной единицы товара (допустим, вес арбуза)
+					String name = titleArray[0];
+					String measureRange = titleArray[1];
 
 					Matcher matcher = Pattern.compile("^(.*?),\\\\s*([0-9]+).*$").matcher(title);
 					if (matcher.find()) {
 						title = matcher.group(1);
 					}
 
-					System.out.println(title + "; " + measureRange + "; " + quantity + "; " + price);
+					System.out.println(name + "; " + measureRange + "; " + quantity + "; " + price);
 
 					// TODO Обработать то, что каждая из этих переменных может быть ПОЧЕМУ-ТО пустой
 				}
@@ -94,13 +96,17 @@ public class App {
 	 * @param title
 	 * @return
 	 */
-	private static String extractMeasureRange(String title) {
-		String measureRange = "";
+	private static String[] extractMeasureRange(String title) {
+		String[] measureRange = new String[2];
 		Pattern pattern = Pattern.compile("(\\d[\\d,.\\s]*\\s*[кгг]*|\\d[\\d,.\\s]*\\s*[-–—]\\s*\\d[\\d,.\\s]*\\s*[кгг]*)$");
 		Matcher matcher = pattern.matcher(title);
 		if (matcher.find()) {
-			measureRange = matcher.group(1).trim();
-		}
+	        measureRange[1] = matcher.group(1).trim(); // Используем только одну группу
+	        measureRange[0] = title.substring(0, matcher.start()).trim(); // Название товара до найденного диапазона
+	    } else {
+	        measureRange[0] = title.trim(); // Если не найдено, возвращаем всю строку как первую часть
+	        measureRange[1] = ""; // Вторая часть будет пустой
+	    }
 		return measureRange;
 	}
 }
