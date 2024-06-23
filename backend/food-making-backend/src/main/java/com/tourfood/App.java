@@ -47,11 +47,11 @@ public class App {
 			String categoryLink = category.attr("href");
 			categoriesList.add(WEBSITE_DOMAIN + categoryLink);
 		}
-		
+
 		// Исключение из одного списка другой
 		categoriesList.removeAll(categoriesExclusionsList);
 		// TODO В будущем оптимизировать (мб можно и без буферного списка)
-		
+
 		for (String categoryLink : categoriesList) {
 			currWebpage = categoryLink;
 			do {
@@ -72,6 +72,13 @@ public class App {
 					String[] titleArray = extractMeasureRange(title); // Примерная граммовка одной единицы товара (допустим, вес арбуза)
 					String name = titleArray[0];
 					String measureRange = titleArray[1];
+
+					if (price.endsWith("₽")) {
+						price = price.substring(0, price.length() - 1).trim();
+					}
+					if (price.endsWith(" ")) {
+						price = price.substring(0, price.length() - 1).trim();
+					}
 
 					Matcher matcher = Pattern.compile("^(.*?),\\\\s*([0-9]+).*$").matcher(title);
 					if (matcher.find()) {
@@ -103,17 +110,17 @@ public class App {
 		Pattern pattern = Pattern.compile("(\\d[\\d,.\\s]*\\s*[кгг]*|\\d[\\d,.\\s]*\\s*[-–—]\\s*\\d[\\d,.\\s]*\\s*[кгг]*)$");
 		Matcher matcher = pattern.matcher(title);
 		if (matcher.find()) {
-	        measureRange[1] = matcher.group(1).trim(); // Используем только одну группу
-	        measureRange[0] = title.substring(0, matcher.start()).trim(); // Название товара до найденного диапазона
-	    } else {
-	        measureRange[0] = title.trim(); // Если не найдено, возвращаем всю строку как первую часть
-	        measureRange[1] = ""; // Вторая часть будет пустой
-	    }
-		
-	    if (measureRange[0].endsWith(",")) {
-	        measureRange[0] = measureRange[0].substring(0, measureRange[0].length() - 1).trim();
-	    }
-		
+			measureRange[1] = matcher.group(1).trim(); // Используем только одну группу
+			measureRange[0] = title.substring(0, matcher.start()).trim(); // Название товара до найденного диапазона
+		} else {
+			measureRange[0] = title.trim(); // Если не найдено, возвращаем всю строку как первую часть
+			measureRange[1] = ""; // Вторая часть будет пустой
+		}
+
+		if (measureRange[0].endsWith(",")) {
+			measureRange[0] = measureRange[0].substring(0, measureRange[0].length() - 1).trim();
+		}
+
 		return measureRange;
 	}
 }
