@@ -107,6 +107,11 @@ public class App {
 	        measureRange[0] = title.trim(); // Если не найдено, возвращаем всю строку как первую часть
 	        measureRange[1] = ""; // Вторая часть будет пустой
 	    }
+		
+	    if (measureRange[0].endsWith(",")) {
+	        measureRange[0] = measureRange[0].substring(0, measureRange[0].length() - 1).trim();
+	    }
+		
 		return measureRange;
 	}
 }
