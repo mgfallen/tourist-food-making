@@ -15,7 +15,12 @@ public class App {
 		final String WEBSITE_DOMAIN = "https://yarcheplus.ru";
 		final String WEBSITE = WEBSITE_DOMAIN + "/catalog/ovoschi-i-frukty-187"; // TODO Получать каждую веб-страницу из https://yarcheplus.ru/
 		final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
-		final String CSSSELECTOR_WORKZONE = "#app-content > div > div:last-of-type > div:nth-of-type(2) > div:first-of-type > div:last-of-type > div:last-of-type > div:last-of-type";
+		final String CSSSELECTOR_WORKZONE_PRODUCTS = "#app-content > div > div:last-of-type > div:nth-of-type(2) > div:first-of-type > div:last-of-type > div:last-of-type > div:last-of-type";
+		final String CSSSELECTOR_WORKZONE_PRODUCTDIALOG = "main#app > div:not(#app-content) > div > div[role=\"dialog\"] div:has(> div > h1)";
+		final String CSSSELECTOR_PRODUCTDIALOG_PROTEINS = "> div:first-of-type + div + div + div + div > div:nth-of-type(2) > div:first-of-type";
+		final String CSSSELECTOR_PRODUCTDIALOG_FATS = "> div:first-of-type + div + div + div + div > div:nth-of-type(3) > div:first-of-type";
+		final String CSSSELECTOR_PRODUCTDIALOG_CARBOHYDRATES = "> div:first-of-type + div + div + div + div > div:nth-of-type(4) > div:first-of-type";
+		final String CSSSELECTOR_PRODUCTDIALOG_CAL = "> div:first-of-type + div + div + div + div > div:nth-of-type(5) > div:first-of-type";
 		final String CSSSELECTOR_CATEGORIES = "#app-content > div > div:last-of-type > div:first-of-type > div > a:has(> picture)";
 		final String CSSSELECTOR_PAGINATION = "> div:last-of-type > div:last-of-type > a:has(svg)";
 		final String CSSSELECTOR_PRODUCT = "> div:first-of-type > div > div";
@@ -62,7 +67,7 @@ public class App {
 					e.printStackTrace();
 					System.exit(1);
 				}
-				Elements products = doc.select(CSSSELECTOR_WORKZONE).select(CSSSELECTOR_PRODUCT);
+				Elements products = doc.select(CSSSELECTOR_WORKZONE_PRODUCTS).select(CSSSELECTOR_PRODUCT);
 
 				for (Element everyProduct : products) {
 					String link = WEBSITE_DOMAIN + everyProduct.select(CSSSELECTOR_PRODUCT_LINK).first().attr("href");
@@ -90,7 +95,7 @@ public class App {
 					// TODO Обработать то, что каждая из этих переменных может быть ПОЧЕМУ-ТО пустой
 				}
 				try {
-					nextPageLink = doc.select(CSSSELECTOR_WORKZONE).select(CSSSELECTOR_PAGINATION).first().attr("href");
+					nextPageLink = doc.select(CSSSELECTOR_WORKZONE_PRODUCTS).select(CSSSELECTOR_PAGINATION).first().attr("href");
 				} catch (NullPointerException e) {
 					break;
 				}
