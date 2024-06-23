@@ -44,8 +44,12 @@ public class App {
 		List<String> categoriesList = new ArrayList<>();
 		for (Element category : categories) {
 			String categoryLink = category.attr("href");
-			categoriesList.add(categoryLink);
+			categoriesList.add(websiteDomain + categoryLink);
 		}
+		
+		// Исключение из одного списка другой
+		categoriesList.removeAll(categoriesExclusionsList);
+		
 		for (String categoryLink : categoriesList) {
 			currWebpage = websiteDomain + categoryLink;
 			do {
