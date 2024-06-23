@@ -25,48 +25,57 @@ public class App {
 
 		String currWebpage = new String(website);
 		String nextPageLink = null;
-		do {
-			try {
-				doc = Jsoup.connect(currWebpage).userAgent(userAgent).get();
-			} catch (IOException e) {
-				System.err.println("Не удалось связаться с веб-страницей «" + currWebpage + "».");
-				e.printStackTrace();
-				System.exit(1);
-			}
-			Elements products = doc.select(CSSselectorWorkzone).select(CSSSelectorProduct);
-            Elements categories = doc.select(CSSselectorCategories);
-            List<String> categoriesList = new ArrayList<>();
-            for (Element category : categories) {
-                String categoryLink = category.attr("href");
-                categoriesList.add(categoryLink);
-            }
-            for (String categoryLink : categoriesList) {
-            	System.out.println(websiteDomain + categoryLink);
-            }
 
-			for (Element everyProduct : products) {
-				String title = everyProduct.select(CSSselectorProductTitle).first().text();
-				String quantity = everyProduct.select(CSSselectorProductQuantity).first().text();
-				String price = everyProduct.select(CSSselectorProductPrice).first().text(); // TODO Цена парсится за килограмм, а не за штуку
-				String measureRange = extractMeasureRange(title); // Примерная граммовка одной единицы товара (допустим, вес арбуза)
-
-				Matcher matcher = Pattern.compile("^(.*?),\\\\s*([0-9]+).*$").matcher(title);
-				if (matcher.find()) {
-					title = matcher.group(1);
+		// TODO Убрать шаблонный код (для парсинга первых продуктов устанавливается ДВА последовательных подключения)
+		try {
+			doc = Jsoup.connect(currWebpage).userAgent(userAgent).get();
+		} catch (IOException e) {
+			System.err.println("Не удалось связаться с веб-страницей «" + currWebpage + "».");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		Elements categories = doc.select(CSSselectorCategories);
+		List<String> categoriesList = new ArrayList<>();
+		for (Element category : categories) {
+			String categoryLink = category.attr("href");
+			categoriesList.add(categoryLink);
+		}
+		for (String categoryLink : categoriesList) {
+			currWebpage = websiteDomain + categoryLink;
+			do {
+				try {
+					doc = Jsoup.connect(currWebpage).userAgent(userAgent).get();
+				} catch (IOException e) {
+					System.err.println("Не удалось связаться с веб-страницей «" + currWebpage + "».");
+					e.printStackTrace();
+					System.exit(1);
 				}
+				Elements products = doc.select(CSSselectorWorkzone).select(CSSSelectorProduct);
 
-				System.out.println(title + "; " + measureRange + "; " + quantity + "; " + price);
+				for (Element everyProduct : products) {
+					String title = everyProduct.select(CSSselectorProductTitle).first().text();
+					String quantity = everyProduct.select(CSSselectorProductQuantity).first().text();
+					String price = everyProduct.select(CSSselectorProductPrice).first().text(); // TODO Цена парсится за килограмм, а не за штуку
+					String measureRange = extractMeasureRange(title); // Примерная граммовка одной единицы товара (допустим, вес арбуза)
 
-				// TODO Обработать то, что каждая из этих переменных может быть ПОЧЕМУ-ТО пустой
-			}
-			try {
-				nextPageLink = doc.select(CSSselectorWorkzone).select(CSSselectorPagination).first().attr("href");
-			} catch (NullPointerException e) {
-				break;
-			}
-			currWebpage = websiteDomain + new String(nextPageLink);
-		} while (nextPageLink != null);
-		// TODO В будущем реализовать пагинацию с помощью нажатия кнопки (`<button>`)
+					Matcher matcher = Pattern.compile("^(.*?),\\\\s*([0-9]+).*$").matcher(title);
+					if (matcher.find()) {
+						title = matcher.group(1);
+					}
+
+					System.out.println(title + "; " + measureRange + "; " + quantity + "; " + price);
+
+					// TODO Обработать то, что каждая из этих переменных может быть ПОЧЕМУ-ТО пустой
+				}
+				try {
+					nextPageLink = doc.select(CSSselectorWorkzone).select(CSSselectorPagination).first().attr("href");
+				} catch (NullPointerException e) {
+					break;
+				}
+				currWebpage = websiteDomain + new String(nextPageLink);
+			} while (nextPageLink != null);
+			// TODO В будущем реализовать пагинацию с помощью нажатия кнопки (`<button>`)
+		}
 	}
 
 	/**
