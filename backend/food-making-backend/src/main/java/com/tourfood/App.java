@@ -1,5 +1,7 @@
 package com.tourfood;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.*;
 import java.io.IOException;
 import org.jsoup.*;
@@ -13,6 +15,7 @@ public class App {
 		String website = websiteDomain + "/catalog/ovoschi-i-frukty-187"; // TODO Получать каждую веб-страницу из https://yarcheplus.ru/
 		String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
 		String CSSselectorWorkzone = "#app-content > div > div:last-of-type > div:nth-of-type(2) > div:first-of-type > div:last-of-type > div:last-of-type > div:last-of-type";
+		String CSSselectorCategories = "#app-content > div > div:last-of-type > div:first-of-type > div > a";
 		String CSSselectorPagination = "> div:last-of-type > div:last-of-type > a:has(svg)";
 		String CSSSelectorProduct = "> div:first-of-type > div > div"; // Почему нужно с «>»? Без него ничего не работает
 		String CSSselectorProductTitle = "> div:nth-of-type(2) > div:nth-of-type(2) > div:first-of-type"; // Его содержимое типа: «Томаты Черри Делтари, 250&nbsp;г», «Чеснок молодой», «Чеснок 3 шт», «Лимоны поштучно, 0,1 - 0,3 кг», «Лайм 1 шт.», «Капуста белокочанная Свежий урожай поштучно, 1,2 - 4,5 кг», «Голубика», «Манго желтое, поштучно, 0,3 - 0,8 кг» (желтое и поштучно нужно будет убирать)
@@ -31,6 +34,12 @@ public class App {
 				System.exit(1);
 			}
 			Elements products = doc.select(CSSselectorWorkzone).select(CSSSelectorProduct);
+            Elements categories = doc.select(CSSselectorCategories);
+            List<String> categoriesList = new ArrayList<>();
+            for (Element category : categories) {
+                String categoryLink = category.attr("href");
+                categoriesList.add(categoryLink);
+            }
 
 			for (Element everyProduct : products) {
 				String title = everyProduct.select(CSSselectorProductTitle).first().text();
