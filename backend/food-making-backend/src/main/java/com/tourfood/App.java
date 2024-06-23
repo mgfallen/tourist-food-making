@@ -40,6 +40,9 @@ public class App {
                 String categoryLink = category.attr("href");
                 categoriesList.add(categoryLink);
             }
+            for (String categoryLink : categoriesList) {
+            	System.out.println(websiteDomain + categoryLink);
+            }
 
 			for (Element everyProduct : products) {
 				String title = everyProduct.select(CSSselectorProductTitle).first().text();
