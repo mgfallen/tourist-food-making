@@ -49,6 +49,7 @@ public class App {
 		
 		// Исключение из одного списка другой
 		categoriesList.removeAll(categoriesExclusionsList);
+		// TODO В будущем оптимизировать (мб можно и без буферного списка)
 		
 		for (String categoryLink : categoriesList) {
 			currWebpage = websiteDomain + categoryLink;
