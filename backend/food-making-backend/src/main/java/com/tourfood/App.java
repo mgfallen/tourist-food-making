@@ -18,7 +18,8 @@ public class App {
 		final String CSSSELECTOR_WORKZONE = "#app-content > div > div:last-of-type > div:nth-of-type(2) > div:first-of-type > div:last-of-type > div:last-of-type > div:last-of-type";
 		final String CSSSELECTOR_CATEGORIES = "#app-content > div > div:last-of-type > div:first-of-type > div > a:has(> picture)";
 		final String CSSSELECTOR_PAGINATION = "> div:last-of-type > div:last-of-type > a:has(svg)";
-		final String CSSSELECTOR_PRODUCT = "> div:first-of-type > div > div"; // Почему нужно с «>»? Без него ничего не работает
+		final String CSSSELECTOR_PRODUCT = "> div:first-of-type > div > div";
+		final String CSSSELECTOR_PRODUCT_LINK = "> a"; // Почему нужно с «>»? Без него ничего не работает
 		final String CSSSELECTOR_PRODUCT_TITLE = "> div:nth-of-type(2) > div:nth-of-type(2) > div:first-of-type"; // Его содержимое типа: «Томаты Черри Делтари, 250&nbsp;г», «Чеснок молодой», «Чеснок 3 шт», «Лимоны поштучно, 0,1 - 0,3 кг», «Лайм 1 шт.», «Капуста белокочанная Свежий урожай поштучно, 1,2 - 4,5 кг», «Голубика», «Манго желтое, поштучно, 0,3 - 0,8 кг» (желтое и поштучно нужно будет убирать)
 		final String CSSSELECTOR_PRODUCT_QUANTITY = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)"; // Содержимое здесь — это граммовка. Формат: «250 г» или «1 кг» или «1 шт.»
 		final String CSSSELECTOR_PRODUCT_PRICE = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:first-of-type"; // TODO ВНИМАНИЕ: захватывает только самую дешёвую цену (которая по скидке). В будущем захватывать обе цены для предоставления выбора пользователю. Формат: «169,99 ₽»
@@ -64,6 +65,7 @@ public class App {
 				Elements products = doc.select(CSSSELECTOR_WORKZONE).select(CSSSELECTOR_PRODUCT);
 
 				for (Element everyProduct : products) {
+					String link = WEBSITE_DOMAIN + everyProduct.select(CSSSELECTOR_PRODUCT_LINK).first().attr("href");
 					String title = everyProduct.select(CSSSELECTOR_PRODUCT_TITLE).first().text();
 					String quantity = everyProduct.select(CSSSELECTOR_PRODUCT_QUANTITY).first().text();
 					String price = everyProduct.select(CSSSELECTOR_PRODUCT_PRICE).first().text(); // TODO Цена парсится за килограмм, а не за штуку
@@ -76,7 +78,7 @@ public class App {
 						title = matcher.group(1);
 					}
 
-					System.out.println(name + "; " + measureRange + "; " + quantity + "; " + price);
+					System.out.println(name + "; " + measureRange + "; " + quantity + "; " + price + "; " + link);
 
 					// TODO Обработать то, что каждая из этих переменных может быть ПОЧЕМУ-ТО пустой
 				}
