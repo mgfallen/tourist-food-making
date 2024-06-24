@@ -87,10 +87,30 @@ public class App {
 						System.exit(1);
 					}
 					Element productDialog = docProductDialog.select(CSSSELECTOR_WORKZONE_PRODUCTDIALOG).first();
-					String proteins = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_PROTEINS).first().text();
-					String fats = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_FATS).first().text();
-					String carbohydrates = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_CARBOHYDRATES).first().text();
-					String cal = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_CAL).first().text();
+					String proteins = null;
+					String fats = null;
+					String carbohydrates = null;
+					String cal = null;
+					try {
+						proteins = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_PROTEINS).first().text();
+					} catch (NullPointerException e) {
+						proteins = "-";
+					}
+					try {
+						fats = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_FATS).first().text();
+					} catch (NullPointerException e) {
+						fats = "-";
+					}
+					try {
+						carbohydrates = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_CARBOHYDRATES).first().text();
+					} catch (NullPointerException e) {
+						carbohydrates = "-";
+					}
+					try {
+						cal = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_CAL).first().text();
+					} catch (NullPointerException e) {
+						carbohydrates = "-";
+					}
 
 					if (price.endsWith("₽")) {
 						price = price.substring(0, price.length() - 1).trim();
