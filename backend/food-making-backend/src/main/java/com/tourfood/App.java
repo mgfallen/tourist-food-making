@@ -17,10 +17,10 @@ public class App {
 		final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
 		final String CSSSELECTOR_WORKZONE_PRODUCTS = "#app-content > div > div:last-of-type > div:nth-of-type(2) > div:first-of-type > div:last-of-type > div:last-of-type > div:last-of-type";
 		final String CSSSELECTOR_WORKZONE_PRODUCTDIALOG = "main#app > div:not(#app-content) > div > div[role=\"dialog\"] div:has(> div > h1)";
-		final String CSSSELECTOR_PRODUCTDIALOG_PROTEINS = "> div:not(:has(button)):has(+ div a[href$=\"/reviews\"]) > div:nth-of-type(2) > div:first-of-type";
-		final String CSSSELECTOR_PRODUCTDIALOG_FATS = "> div:not(:has(button)):has(+ div a[href$=\"/reviews\"]) > div:nth-of-type(3) > div:first-of-type";
-		final String CSSSELECTOR_PRODUCTDIALOG_CARBOHYDRATES = "> div:not(:has(button)):has(+ div a[href$=\"/reviews\"]) > div:nth-of-type(4) > div:first-of-type";
-		final String CSSSELECTOR_PRODUCTDIALOG_CAL = "> div:not(:has(button)):has(+ div a[href$=\"/reviews\"]) > div:nth-of-type(5) > div:first-of-type";
+		final String CSSSELECTOR_PRODUCTDIALOG_PROTEINS = "> div:not(:has(button)):has(div:first-child + div + div + div + div:last-child):not(:last-of-type) > div:nth-of-type(2) > div:first-of-type";
+		final String CSSSELECTOR_PRODUCTDIALOG_FATS = "> div:not(:has(button)):has(div:first-child + div + div + div + div:last-child):not(:last-of-type) > div:nth-of-type(3) > div:first-of-type";
+		final String CSSSELECTOR_PRODUCTDIALOG_CARBOHYDRATES = "> div:not(:has(button)):has(div:first-child + div + div + div + div:last-child):not(:last-of-type) > div:nth-of-type(4) > div:first-of-type";
+		final String CSSSELECTOR_PRODUCTDIALOG_CAL = "> div:not(:has(button)):has(div:first-child + div + div + div + div:last-child):not(:last-of-type) > div:nth-of-type(5) > div:first-of-type";
 		final String CSSSELECTOR_CATEGORIES = "#app-content > div > div:last-of-type > div:first-of-type > div > a:has(> picture)";
 		final String CSSSELECTOR_PAGINATION = "> div:last-of-type > div:last-of-type > a:has(svg)";
 		final String CSSSELECTOR_PRODUCT = "> div:first-of-type > div > div";
@@ -77,7 +77,7 @@ public class App {
 					String[] titleArray = extractMeasureRange(title); // Примерная граммовка одной единицы товара (допустим, вес арбуза)
 					String name = titleArray[0];
 					String measureRange = titleArray[1];
-					
+
 					Document docProductDialog = null;
 					try {
 						docProductDialog = Jsoup.connect(link).userAgent(WEBSITE_USERAGENT).get();
@@ -87,13 +87,11 @@ public class App {
 						System.exit(1);
 					}
 					Element productDialog = docProductDialog.select(CSSSELECTOR_WORKZONE_PRODUCTDIALOG).first();
-					System.out.println(productDialog);
-					System.out.println(CSSSELECTOR_PRODUCTDIALOG_PROTEINS);
 					String proteins = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_PROTEINS).first().text();
 					String fats = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_FATS).first().text();
 					String carbohydrates = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_CARBOHYDRATES).first().text();
 					String cal = productDialog.select(CSSSELECTOR_PRODUCTDIALOG_CAL).first().text();
-					
+
 					if (price.endsWith("₽")) {
 						price = price.substring(0, price.length() - 1).trim();
 					}
