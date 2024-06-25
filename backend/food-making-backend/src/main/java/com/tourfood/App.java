@@ -177,7 +177,7 @@ public class App {
 		if (element.tagName().equals("div") && element.text().equals(searchText)) {
 			// Находим предыдущий sibling элемент с тегом div
 			Element previousSibling = element.previousElementSibling();
-			while (previousSibling != null && !previousSibling.tagName().equals("div")) {
+			while (previousSibling != null && !previousSibling.tagName().equalsIgnoreCase("div")) {
 				previousSibling = previousSibling.previousElementSibling();
 			}
 			return previousSibling != null ? previousSibling.text() : null;
