@@ -83,16 +83,19 @@ public class App {
 						System.exit(1);
 					}
 					Elements productDialog = docProductDialog.select(CSSSELECTOR_WORKZONE_PRODUCTDIALOG + "> div");
-					byte divNum = 0;
 					byte i = 0;
+					Element productFoodEnergy = null;
 					for (Element productPropertyDiv : productDialog) {
 						Element foo = productPropertyDiv.select("a[href$='/reviews']").first();
+						// if (foo == null) {
+						// 	foo = productPropertyDiv.select("> div > div > div > div").first(); // .first().text().equalsIgnoreCase("Нет оценок")
+						// }
 						i++;
 						if (foo != null) {
-							divNum = i;
+							productFoodEnergy = productDialog.get(i-2); // -1 т.к. отсчёт с нуля и -1 т.к. нужно взять более ранний элемент
 						}
-					}					
-					Element productFoodEnergy = productDialog.get(divNum-2); // -1 т.к. отсчёт с нуля и -1 т.к. нужно взять более ранний элемент
+					}
+					
 					String proteins = null;
 					String fats = null;
 					String carbohydrates = null;
