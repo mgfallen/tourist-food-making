@@ -5,10 +5,15 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.regex.*;
 import java.io.IOException;
+import java.io.File;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class App {
 
@@ -71,6 +76,8 @@ public class App {
 		categoriesList.removeIf(category -> categoriesExclusionsList.contains(category.link));
 		// TODO В будущем оптимизировать (мб можно и без буферного списка)
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayNode usersArray = objectMapper.createArrayNode();
 		for (Category category : categoriesList) {
 			currWebpage = category.link;
 			do {
@@ -153,6 +160,12 @@ public class App {
 
 					System.out.println(category.name + "; " + name + "; " + measureRange + "; " + quantity + "; " + price + "; " + link + "; " + proteins + "; " + fats + "; " + carbohydrates + "; " + cal);
 
+		            ObjectNode userNode = objectMapper.createObjectNode();
+			        userNode.put("name", "John Doe");
+			        userNode.put("age", 30);
+			        userNode.put("email", "john.doe@example.com");
+		            usersArray.add(userNode);
+					
 					// TODO Обработать то, что каждая из этих переменных может быть ПОЧЕМУ-ТО пустой
 				}
 				try {
@@ -163,6 +176,12 @@ public class App {
 				currWebpage = WEBSITE_DOMAIN + new String(nextPageLink);
 			} while (nextPageLink != null);
 			// TODO В будущем реализовать пагинацию с помощью нажатия кнопки (`<button>`)
+	        try {
+	            objectMapper.writeValue(new File("users.json"), usersArray);
+	            System.out.println("JSON файл создан успешно!");
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
 		}
 	}
 
