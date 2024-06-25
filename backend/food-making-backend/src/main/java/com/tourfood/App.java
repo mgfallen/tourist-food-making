@@ -11,6 +11,22 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class App {
+
+	static class Category {
+		String link;
+		String name;
+
+		Category(String link, String name) {
+			this.link = link;
+			this.name = name;
+		}
+
+		@Override
+		public String toString() {
+			return "Category{" + "link='" + link + '\'' + ", name='" + name + '\'' + '}';
+		}
+	}
+
 	public static void main(String[] args) {
 		final String WEBSITE_DOMAIN = "https://yarcheplus.ru";
 		final String WEBSITE = WEBSITE_DOMAIN + "/catalog/ovoschi-i-frukty-187"; // TODO Получать каждую веб-страницу из https://yarcheplus.ru/
@@ -24,6 +40,7 @@ public class App {
 		final String CSSSELECTOR_PRODUCT_TITLE = "> div:nth-of-type(2) > div:nth-of-type(2) > div:first-of-type"; // Его содержимое типа: «Томаты Черри Делтари, 250&nbsp;г», «Чеснок молодой», «Чеснок 3 шт», «Лимоны поштучно, 0,1 - 0,3 кг», «Лайм 1 шт.», «Капуста белокочанная Свежий урожай поштучно, 1,2 - 4,5 кг», «Голубика», «Манго желтое, поштучно, 0,3 - 0,8 кг» (желтое и поштучно нужно будет убирать)
 		final String CSSSELECTOR_PRODUCT_QUANTITY = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)"; // Содержимое здесь — это граммовка. Формат: «250 г» или «1 кг» или «1 шт.»
 		final String CSSSELECTOR_PRODUCT_PRICE = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:first-of-type"; // TODO ВНИМАНИЕ: захватывает только самую дешёвую цену (которая по скидке). В будущем захватывать обе цены для предоставления выбора пользователю. Формат: «169,99 ₽»
+		final String CSSSELECTOR_CATEGORY_NAME = "a > div";
 		final String CATEGORIES_EXCLUSIONS = "https://yarcheplus.ru/catalog/newest-732 https://yarcheplus.ru/catalog/bestseller-731 https://yarcheplus.ru/catalog/detskoe-pitanie-i-gigiena-224 https://yarcheplus.ru/catalog/igrushki-216 https://yarcheplus.ru/catalog/dlya-doma-223 https://yarcheplus.ru/catalog/krasota-i-zdorovye-220 https://yarcheplus.ru/catalog/zootovary-219 https://yarcheplus.ru/catalog/kolgotki-i-noski-173 https://yarcheplus.ru/catalog/podarochnye-pakety-830 https://yarcheplus.ru/catalog/melochi-u-kassy-762"; // TODO В будущем сделать белый список категорий в виде диапазона
 
 		Document doc = null;
@@ -43,18 +60,19 @@ public class App {
 			System.exit(1);
 		}
 		Elements categories = doc.select(CSSSELECTOR_CATEGORIES);
-		List<String> categoriesList = new ArrayList<>();
+		List<Category> categoriesList = new ArrayList<>();
 		for (Element category : categories) {
-			String categoryLink = category.attr("href");
-			categoriesList.add(WEBSITE_DOMAIN + categoryLink);
+			String categoryLink = WEBSITE_DOMAIN + category.attr("href");
+			String categoryName = category.select(CSSSELECTOR_CATEGORY_NAME).text();
+			categoriesList.add(new Category(categoryLink, categoryName));
 		}
 
 		// Исключение из одного списка другой
-		categoriesList.removeAll(categoriesExclusionsList);
+		categoriesList.removeIf(category -> categoriesExclusionsList.contains(category.link));
 		// TODO В будущем оптимизировать (мб можно и без буферного списка)
 
-		for (String categoryLink : categoriesList) {
-			currWebpage = categoryLink;
+		for (Category category : categoriesList) {
+			currWebpage = category.link;
 			do {
 				try {
 					doc = Jsoup.connect(currWebpage).userAgent(WEBSITE_USERAGENT).get();
@@ -95,7 +113,7 @@ public class App {
 							productFoodEnergy = productDialog.get(i-2); // -1 т.к. отсчёт с нуля и -1 т.к. нужно взять более ранний элемент
 						}
 					}
-					
+
 					String proteins = null;
 					String fats = null;
 					String carbohydrates = null;
@@ -133,7 +151,7 @@ public class App {
 						title = matcher.group(1);
 					}
 
-					System.out.println(name + "; " + measureRange + "; " + quantity + "; " + price + "; " + link + "; " + proteins + "; " + fats + "; " + carbohydrates + "; " + cal);
+					System.out.println(category.name + "; " + name + "; " + measureRange + "; " + quantity + "; " + price + "; " + link + "; " + proteins + "; " + fats + "; " + carbohydrates + "; " + cal);
 
 					// TODO Обработать то, что каждая из этих переменных может быть ПОЧЕМУ-ТО пустой
 				}
