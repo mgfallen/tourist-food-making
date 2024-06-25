@@ -97,25 +97,25 @@ public class App {
 						}
 					}					
 					Element productFoodEnergy = productDialog.get(divNum-2); // -1 т.к. отсчёт с нуля и -1 т.к. нужно взять более ранний элемент
-					searchDivs(productFoodEnergy, "Белки");
-					searchDivs(productFoodEnergy, "Жиры");
-					searchDivs(productFoodEnergy, "Углеводы");
-					searchDivs(productFoodEnergy, "ккал");
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
+					System.out.println(searchDivs(productFoodEnergy, "Белки"));
+					System.out.println(searchDivs(productFoodEnergy, "Жиры"));
+					System.out.println(searchDivs(productFoodEnergy, "Углеводы"));
+					System.out.println(searchDivs(productFoodEnergy, "ккал"));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 					String proteins = null;
 					String fats = null;
 					String carbohydrates = null;
@@ -191,21 +191,30 @@ public class App {
 
 		return measureRange;
 	}
-    /**
-     * <p>Рекурсивный поиск необходимых БЖУ и калорий</p>
-     * @param element
-     * @param searchText
-     */
-    private static void searchDivs(Element element, String searchText) {
-        // Проверяем, содержит ли текущий элемент искомый текст
-        if (element.tagName().equals("div") && element.text().contains(searchText)) {
-            System.out.println("Найдено: " + element.text());
-        }
+	/**
+	 * <p>Рекурсивный поиск необходимых БЖУ и калорий</p>
+	 * @param element
+	 * @param searchText
+	 */
+	private static String searchDivs(Element element, String searchText) {
+		if (element.tagName().equals("div") && element.text().equals(searchText)) {
+			// Находим предыдущий sibling элемент с тегом div
+			Element previousSibling = element.previousElementSibling();
+			while (previousSibling != null && !previousSibling.tagName().equals("div")) {
+				previousSibling = previousSibling.previousElementSibling();
+			}
+			return previousSibling != null ? previousSibling.text() : null;
+		}
 
-        // Рекурсивно обходим дочерние элементы
-        Elements children = element.children();
-        for (Element child : children) {
-            searchDivs(child, searchText);
-        }
-    }
+		// Рекурсивно обходим дочерние элементы
+		Elements children = element.children();
+		for (Element child : children) {
+			String result = searchDivs(child, searchText);
+			if (result != null) {
+				return result;
+			}
+		}
+
+		return null;
+	}
 }
