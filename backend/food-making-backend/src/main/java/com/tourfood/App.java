@@ -86,7 +86,25 @@ public class App {
 						e.printStackTrace();
 						System.exit(1);
 					}
-					Element productDialog = docProductDialog.select(CSSSELECTOR_WORKZONE_PRODUCTDIALOG).first();
+					Elements productDialog = docProductDialog.select(CSSSELECTOR_WORKZONE_PRODUCTDIALOG + "> div");
+					byte divNum = 0;
+					byte i = 0;
+					for (Element productPropertyDiv : productDialog) {
+						Element foo = productPropertyDiv.select("a[href$='/reviews']").first();
+						System.out.println(foo);
+						i++;
+						if (foo != null) {
+							divNum = i;
+						}
+					}
+					System.out.println(productDialog.get(divNum-2));
+					
+					
+					
+					
+					
+					
+					
 					String proteins = null;
 					String fats = null;
 					String carbohydrates = null;
