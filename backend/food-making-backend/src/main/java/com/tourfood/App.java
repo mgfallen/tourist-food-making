@@ -95,8 +95,21 @@ public class App {
 						if (foo != null) {
 							divNum = i;
 						}
-					}
-					System.out.println(productDialog.get(divNum-2)); // -1 т.к. отсчёт с нуля и -1 т.к. нужно взять более ранний элемент					
+					}					
+					Element productFoodEnergy = productDialog.get(divNum-2); // -1 т.к. отсчёт с нуля и -1 т.к. нужно взять более ранний элемент
+					searchDivs(productFoodEnergy, "Белки");
+					searchDivs(productFoodEnergy, "Жиры");
+					searchDivs(productFoodEnergy, "Углеводы");
+					searchDivs(productFoodEnergy, "ккал");
+					
+					
+					
+					
+					
+					
+					
+					
+					
 					
 					
 					
@@ -178,4 +191,21 @@ public class App {
 
 		return measureRange;
 	}
+    /**
+     * <p>Рекурсивный поиск необходимых БЖУ и калорий</p>
+     * @param element
+     * @param searchText
+     */
+    private static void searchDivs(Element element, String searchText) {
+        // Проверяем, содержит ли текущий элемент искомый текст
+        if (element.tagName().equals("div") && element.text().contains(searchText)) {
+            System.out.println("Найдено: " + element.text());
+        }
+
+        // Рекурсивно обходим дочерние элементы
+        Elements children = element.children();
+        for (Element child : children) {
+            searchDivs(child, searchText);
+        }
+    }
 }
