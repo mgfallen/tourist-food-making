@@ -24,7 +24,7 @@ services:
       - /home/database-mount/pgdata:/var/lib/postgresql/data
 
   java-app:
-    image: openjdk:17-jre-slim
+    image: openjdk:17-jdk-alpine
     container_name: java-app
     build:
       context: ./backend/food-making-backend
