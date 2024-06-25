@@ -14,7 +14,7 @@ services:
       - go-app
 
   db:
-    image: postgres:1.16.1
+    image: postgres:16.3
     container_name: postgres
     environment:
       POSTGRES_DB: postgres
