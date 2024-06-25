@@ -91,14 +91,12 @@ public class App {
 					byte i = 0;
 					for (Element productPropertyDiv : productDialog) {
 						Element foo = productPropertyDiv.select("a[href$='/reviews']").first();
-						System.out.println(foo);
 						i++;
 						if (foo != null) {
 							divNum = i;
 						}
 					}
-					System.out.println(productDialog.get(divNum-2));
-					
+					System.out.println(productDialog.get(divNum-2)); // -1 т.к. отсчёт с нуля и -1 т.к. нужно взять более ранний элемент					
 					
 					
 					
