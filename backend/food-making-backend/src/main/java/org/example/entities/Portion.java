@@ -13,7 +13,7 @@ public class Portion {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long portion_id;
 
-    @OneToMany(mappedBy = "recipe")
+    @OneToOne(mappedBy = "recipe")
     private Long recipeId;
 
     @OneToMany (mappedBy = "product")
