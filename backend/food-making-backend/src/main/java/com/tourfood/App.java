@@ -37,9 +37,10 @@ public class App {
 			
 			final String WEBSITE = "https://eda.ru/recepty/vypechka-deserty/tonkie-blini-na-moloke-16014";
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
-			final String CSSSELECTOR_INGREDIENTS = "> div:has(> span[itemprop=\"nutrition\"]) + div > div > div:not(:first-of-type)";
-			final String CSSSELECTOR_INGREDIENT_NAME = "> span[itemprop=\"recipeIngredient\"]";
+			final String CSSSELECTOR_INGREDIENTS = "div:has(> span[itemprop=\"nutrition\"]) + div > div > div:not(:first-of-type)";
+			final String CSSSELECTOR_INGREDIENT_NAME = "span[itemprop=\"recipeIngredient\"]";
 			final String CSSSELECTOR_INGREDIENT_QUANTITY = "> div > span:last-of-type";
+			
 			Document doc = null;
 			try {
 				doc = Jsoup.connect(WEBSITE).userAgent(WEBSITE_USERAGENT).get();
@@ -49,8 +50,13 @@ public class App {
 				System.exit(1);
 			}
 			Elements ingredients = doc.select(CSSSELECTOR_INGREDIENTS);
+			
 			for (Element ingredient : ingredients) {
-				System.out.println(ingredient.select(CSSSELECTOR_INGREDIENT_NAME).first().text() + "; " + ingredient.select(CSSSELECTOR_INGREDIENT_QUANTITY).first().text());
+				try {
+					System.out.println(ingredient.select(CSSSELECTOR_INGREDIENT_NAME).first().text() + "; " + ingredient.select(CSSSELECTOR_INGREDIENT_QUANTITY).first().text());
+				} catch (java.lang.NullPointerException e) {
+					e.printStackTrace();
+				}
 			}
 		} else {
 			System.out.println("Парсинг продуктов...");
