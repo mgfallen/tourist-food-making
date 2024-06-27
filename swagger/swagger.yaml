@@ -1,0 +1,816 @@
+openapi: 3.0.0
+info:
+  title: Recipe API
+  version: 1.0.0
+servers:
+  - url: http://158.160.2.48
+    description: Optional server description, e.g. Main (production) server
+tags:
+  - name: products
+    description: Все о продуктах (ингридиентах)
+  - name: recipes
+    description: Все о рецептах
+  - name: users
+    description: Все о пользовательских аккаунтах
+  - name: result
+    description: Все для результирующих запросов
+paths:
+  /products:
+    post:
+      tags:
+        - products
+      summary: Создание продукта
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: gold apple
+                proteins:
+                  type: number
+                fats:
+                  type: number
+                carbonaties:
+                  type: number
+                kilocallories:
+                  type: number
+                price:
+                  type: number
+                pack_weight:
+                  type: number
+                perishable:
+                  type: boolean
+                link:
+                  type: string
+                  example: https://example.com/online-shop/apple
+              required:
+                - name
+                - proteins
+                - fats
+                - carbonaties
+                - kilocallories
+                - price
+                - pack_weight
+                - perishable
+      responses:
+        '201':
+          description: Продукт создан
+        '204':
+          description: Продукт не создан из-за не указания обязательных полей
+    get:
+      tags:
+        - products
+      summary: >-
+        Получение списка всех продуктов, можно указать параметр в виде оффсета
+        продуктов
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+  /products/{product_id}:
+    get:
+      tags:
+        - products
+      summary: Получение информации о конкретном продукте
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+    put:
+      tags:
+        - products
+      summary: Обновление информации о продукте
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: gold apple
+                proteins:
+                  type: number
+                fats:
+                  type: number
+                carbonaties:
+                  type: number
+                kilocallories:
+                  type: number
+                price:
+                  type: number
+                pack_weight:
+                  type: number
+                perishable:
+                  type: boolean
+                link:
+                  type: string
+                  example: https://example.com/online-shop/apple
+      responses:
+        '200':
+          description: Продукт обновлен
+    delete:
+      tags:
+        - products
+      summary: Удаление продукта
+      parameters:
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Продукт удален
+  /products/{order_id}:
+    get:
+      tags:
+        - products
+      summary: Получение списка продуктов для конкретного заказа
+      parameters:
+        - name: order_id
+          in: path
+          required: true
+          description: Идентификатор заказа
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    product_id:
+                      type: integer
+                      example: 101
+                    name:
+                      type: string
+                      example: Яйца
+                    quantity:
+                      type: integer
+                      example: 12
+                    unit:
+                      type: string
+                      example: шт
+                    url:
+                      type: string
+                      example: https://food-good.ru/apple
+        '400':
+          description: Неверный запрос (например, отсутствует или неверный `order_id`)
+        '404':
+          description: Заказ с указанным `order_id` не найден
+        '500':
+          description: Внутренняя ошибка сервера
+
+  /recipes:
+    post:
+      tags:
+        - recipes
+      summary: Создание рецепта с указанием набора продуктов
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                ingredients:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: integer
+                        format: int64
+                      quantity:
+                        type: number
+                price:
+                  type: number
+                mealtime:
+                  type: string
+                  example: breakfast/lunch/dinner
+              required:
+                - name
+                - ingredients
+                - price
+                - mealtime
+      responses:
+        '201':
+          description: Рецепт создан
+        '204':
+          description: Рецепт не создан
+    get:
+      tags:
+        - recipes
+      summary: Получение списка рецептов
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+  /recipes/{recipe_id}:
+    get:
+      tags:
+        - recipes
+      summary: Получение информации о рецепте
+      parameters:
+        - name: recipe_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+    put:
+      tags:
+        - recipes
+      summary: Обновление информации о рецепте
+      parameters:
+        - name: recipe_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                ingredients:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: integer
+                        format: int64
+                      quantity:
+                        type: number
+                price:
+                  type: number
+                mealtime:
+                  type: string
+                  example: breakfast/lunch/dinner
+              required:
+                - name
+                - ingredients
+                - price
+                - mealtime
+      responses:
+        '200':
+          description: Рецепт обновлен
+        '204':
+          description: Рецепт не обновлен
+    delete:
+      tags:
+        - recipes
+      summary: Удаление рецепта
+      parameters:
+        - name: recipe_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Рецепт удален
+  /recipes/{recipe_id}/description:
+    get:
+      tags:
+        - recipes
+      summary: Получение описания существующего рецепта
+      parameters:
+        - name: recipe_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Идентификатор рецепта
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  description:
+                    type: string
+                required:
+                  - description
+    put:
+      tags:
+        - recipes
+      summary: Обновление описания существующего рецепта
+      parameters:
+        - name: recipe_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+              required:
+                - description
+      responses:
+        '201':
+          description: Рецепт обновлен
+        '204':
+          description: Рецепт не обновлен
+  /recipes/{recipe_id}/ingredients:
+    post:
+      tags:
+        - recipes
+      summary: Добавление одного продукта в рецепт
+      parameters:
+        - name: recipe_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                product_id:
+                  type: integer
+                quantity:
+                  type: number
+      responses:
+        '201':
+          description: Продукт добавлен в рецепт
+        '204':
+          description: Продукт не добавлен в рецепт
+  /recipes/{recipe_id}/ingredients/{product_id}:
+    put:
+      tags:
+        - recipes
+      summary: Обновление количества продукта в рецепте
+      parameters:
+        - name: recipe_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quantity:
+                  type: number
+      responses:
+        '200':
+          description: Продукт обновлен в рецепте
+        '204':
+          description: Продукт не обновлен в рецепте
+    delete:
+      tags:
+        - recipes
+      summary: Удаление ингредиента из рецепта
+      parameters:
+        - name: recipe_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: product_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Ингредиент удален из рецепта
+  /users/register:
+    post:
+      tags:
+        - users
+      summary: Регистрация пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: VasyaPupkin
+                email:
+                  type: string
+                  example: email@gmail.com
+                password:
+                  type: string
+                  example: '1234'
+      responses:
+        '201':
+          description: Пользователь зарегистрирован
+        '204':
+          description: Пользователь не зарегистрирован
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Авторизация пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: email@gmail.com
+                password:
+                  type: string
+                  example: '1234'
+      responses:
+        '200':
+          description: Успешная авторизация
+  /users/me:
+    get:
+      tags:
+        - users
+      summary: Получение информации о текущем пользователе
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+        - users
+      summary: Обновление информации о пользователе
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Информация о пользователе обновлена
+        '204':
+          description: Информация о пользователе не обновлена
+    delete:
+      tags:
+        - users
+      summary: Удаление пользователя
+      responses:
+        '204':
+          description: Пользователь удален
+  /users/me/history:
+    post:
+      tags:
+        - users
+      summary: Добавление рецепта в историю конкретного пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipe_id:
+                  type: integer
+      responses:
+        '201':
+          description: Рецепт добавлен в историю
+    get:
+      tags:
+        - users
+      summary: Получение истории рецептов пользователя
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserHistoryRecipe'
+  /users/me/history/{history_id}:
+    delete:
+      tags:
+        - users
+      summary: Удаление записи из истории
+      parameters:
+        - name: history_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Запись удалена из истории
+  /users/me/favorites:
+    post:
+      tags:
+        - users
+      summary: Добавление рецепта в понравившиеся
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipe_id:
+                  type: integer
+      responses:
+        '201':
+          description: Рецепт добавлен в понравившиеся
+    get:
+      tags:
+        - users
+      summary: Получение списка понравившихся рецептов пользователя
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserFavoriteRecipe'
+  /users/me/favorites/{favorite_id}:
+    delete:
+      tags:
+        - users
+      summary: Удаление рецепта из понравившихся
+      parameters:
+        - name: favorite_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Рецепт удален из понравившихся
+  /api/v1/recommendation/:
+    post:
+      tags:
+        - result
+      summary: Получение истории рецептов пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                num_people:
+                  type: integer
+                  description: Число людей (до 50)
+                  example: 4
+                excluded_food:
+                  type: array
+                  items:
+                    type: integer
+                  description: Список ID исключаемых продуктов
+                  example: [2, 5, 9]
+                num_days:
+                  type: integer
+                  description: Как много дней (до 14)
+                  example: 7
+                available_cookware:
+                  type: array
+                  items:
+                    type: string
+                  description: Доступная посуда
+                  example: ["кастрюля", "сковорода"]
+                budget:
+                  type: string
+                  description: Бюджет
+                  enum: [маленький, средний, большой]
+                  example: средний
+      responses:
+        '200':
+          description: Успешный запрос
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    order_id:
+                      type: integer
+                      example: 12345
+                    breakfast:
+                      type: object
+                      properties:
+                        recipe_id:
+                          type: integer
+                          example: 1
+                        name:
+                          type: string
+                          example: Омлет с овощами
+                    lunch:
+                      type: object
+                      properties:
+                        recipe_id:
+                          type: integer
+                          example: 2
+                        name:
+                          type: string
+                          example: Куриный суп
+                    dinner:
+                      type: object
+                      properties:
+                        recipe_id:
+                          type: integer
+                          example: 3
+                        name:
+                          type: string
+                          example: Стейк с картофелем
+        '400':
+          description: Неверный запрос
+        '404':
+          description: Данные не найдены
+        '500':
+          description: Внутренняя ошибка сервера
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        product_id:
+          type: integer
+          format: int64
+        name:
+          type: string
+          example: gold apple
+        proteins:
+          type: number
+        fats:
+          type: number
+        carbonaties:
+          type: number
+        kilocallories:
+          type: number
+        price:
+          type: number
+        pack_weight:
+          type: number
+        perishable:
+          type: boolean
+        link:
+          type: string
+          example: https://example.com/online-shop/apple
+      required:
+        - name
+        - proteins
+        - fats
+        - carbonaties
+        - kilocallories
+        - price
+        - pack_weight
+        - perishable
+    Recipe:
+      type: object
+      properties:
+        recipe_id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        description:
+          type: string
+        ingredients:
+          type: array
+          items:
+            type: object
+            properties:
+              product_id:
+                type: integer
+              quantity:
+                type: number
+        price:
+          type: number
+        mealtime:
+          type: string
+          example: breakfast/lunch/dinner
+      required:
+        - recipe_id
+        - name
+        - ingredients
+        - price
+        - mealtime
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        username:
+          type: string
+          example: VasyaPupkin
+        email:
+          type: string
+          example: email@gmail.com
+      required:
+        - user_id
+        - username
+        - email
+    UserHistoryRecipe:
+      type: object
+      properties:
+        history_id:
+          type: integer
+        user_id:
+          type: integer
+        recipe_id:
+          type: integer
+        date_added:
+          type: string
+          format: date-time
+    UserFavoriteRecipe:
+      type: object
+      properties:
+        favorite_id:
+          type: integer
+        user_id:
+          type: integer
+        recipe_id:
+          type: integer
+        date_added:
+          type: string
+          format: date-time
