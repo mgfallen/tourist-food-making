@@ -1,11 +1,12 @@
 version: '3.3'
 
 services:
-  openapi-generator:
-    image: openapitools/openapi-generator-cli
+  openapi:
+    build:
+      context: .
+      dockerfile: swagger/Dockerfile
     volumes:
-      - .:/app
-    command: generate -i /swagger/swagger.yaml -g html2 -o /swagger/swagger_html
+      - ./swagger:/app
 
   nginx:
     image: nginx:1.27.0
@@ -14,7 +15,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./swagger:/usr/share/nginx/html
+      - ./swagger/swagger_html:/usr/share/nginx/html/swagger
     depends_on:
       - java-app
       - go-app
