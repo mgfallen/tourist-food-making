@@ -9,6 +9,9 @@ module.exports = {
   ],
   prefix: "",
   theme: {
+    fontFamily: {
+      sedwick: ['Sedwick'],
+    },
     container: {
       center: true,
       padding: "2rem",
@@ -17,7 +20,10 @@ module.exports = {
       },
     },
     extend: {
+
       colors: {
+        titlePink: "#FF80A1",
+        mainBlue: "#9580FF",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
