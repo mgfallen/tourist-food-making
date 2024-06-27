@@ -5,7 +5,7 @@ services:
     image: openapitools/openapi-generator-cli
     volumes:
       - .:/app
-    command: generate -i /app/petstore.yaml -g html2 -o /app/petstore_html
+    command: generate -i /swagger/swagger.yaml -g html2 -o /swagger/swagger_html
 
   nginx:
     image: nginx:1.27.0
