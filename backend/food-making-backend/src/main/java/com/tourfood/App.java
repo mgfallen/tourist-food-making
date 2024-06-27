@@ -95,17 +95,19 @@ public class App {
 						}
 
 						String[] ingredientQuantityConverted = new String[2];
-						try {
-							ingredientQuantityConverted = measureConvert(ingredientQuantity, ingredientMeasure);
-						} catch (IllegalArgumentException e) {
-							System.err.println();
-							e.printStackTrace();
+						if (ingredientRequired == true) {
+							try {
+								ingredientQuantityConverted = measureConvert(ingredientQuantity, ingredientMeasure);
+							} catch (IllegalArgumentException e) {
+								System.err.println();
+								e.printStackTrace();
+							}
 						}
 						ingredientQuantity = ingredientQuantityConverted[0];
 						ingredientMeasure = ingredientQuantityConverted[1];
 						
 						if (ingredientRequired == true) {
-							System.out.println(ingredientName + " — " + ingredientQuantity + " " + ingredientMeasure);								
+							System.out.println(ingredientName + " — " + ingredientQuantity + " " + ingredientMeasure);
 						} else {
 							System.out.println(ingredientName);
 						}
@@ -350,16 +352,18 @@ public class App {
 	 * @throws IllegalArgumentException
 	 */
 	private static String[] measureConvert(String ingredientQuantity, String ingredientMeasure) {
-		String[] ingredientMeasureConverted = {ingredientQuantity, ingredientMeasure};
-		
+		float ingredientQuantityFloat = Float.parseFloat(ingredientQuantity);
+
+		String[] ingredientMeasureConverted = {String.valueOf(ingredientQuantityFloat), ingredientMeasure};
+
 		if (ingredientMeasureConverted[1] != null) {
 			switch (ingredientMeasureConverted[1].toLowerCase()) {
 			case "кг":
-				ingredientMeasureConverted[0] = Integer.toString(Integer.parseInt(ingredientMeasureConverted[0]) * 1000);
+				ingredientMeasureConverted[0] = String.valueOf(ingredientQuantityFloat *= 1000);
 				ingredientMeasureConverted[1] = "г";
 				break;
 			case "л":
-				ingredientMeasureConverted[0] = Integer.toString(Integer.parseInt(ingredientMeasureConverted[0]) * 1000);
+				ingredientMeasureConverted[0] = String.valueOf(ingredientQuantityFloat *= 1000);
 				ingredientMeasureConverted[1] = "мл";
 				break;
 			}
