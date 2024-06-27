@@ -39,6 +39,7 @@ public class App {
 			final String WEBSITE_DOMAIN = "https://1000.menu";
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
 			final String CSSSELECTOR_WEBSITE_RECIPES = ".cooking-block > .cn-item:not(.ads_enabled)";
+			final String CSSSELECTOR_WEBSITE_RECIPENAME = "a.h5";
 			final String CSSSELECTOR_WEBSITE_RECIPELINK = "a.h5";
 			final String CSSSELECTOR_RECIPE_INGREDIENTS = "#recept-list > .ingredient";
 			final String CSSSELECTOR_RECIPE_INGREDIENT_NAME = ".name";
@@ -56,7 +57,11 @@ public class App {
 
 			Elements recipes = doc.select(CSSSELECTOR_WEBSITE_RECIPES);
 			for (Element recipe : recipes) {
-				String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).attr("href");
+				String recipeName = recipe.select(CSSSELECTOR_WEBSITE_RECIPENAME).first().text();
+				String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).first().attr("href");
+				
+				System.out.println(recipeName);
+				System.out.println();
 				if (recipeLink != null) {
 					recipeLink = WEBSITE_DOMAIN + recipeLink;
 					Document recipeWebpage = null;
