@@ -5,16 +5,16 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
+  'inline-flex items-center justify-center whitespace-nowrap rounded-md text-base transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
   {
     variants: {
       variant: {
         default:
           'bg-transparent text-primary-foreground focus:border focus:border-white',
         custom:
-          'bg-customPurple text-primary-foreground text-[20px] hover:bg-primary/90',
+          'bg-customPurple-100 text-primary-foreground text-xl focus:bg-customPurple-200',
         customGradient:
-          ' text-white text-xs p-[16px] font-size-14 bg-gradient-to-r from-customPurple to-customPink border-ra hover:bg-primary/90',
+          ' text-white p-[16px] text-sm font-nunito font-light bg-myGrad border-ra hover:bg-primary/90',
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:

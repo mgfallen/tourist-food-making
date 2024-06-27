@@ -1,86 +1,27 @@
 import { Background } from '@/components/Background'
-import { Container } from '@/components/Container'
-import { Section } from '@/components/Section'
 import { Title } from '@/components/Title'
-import { Button } from '@/components/ui/button'
-import { useNavigate } from 'react-router-dom'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { MenuTab } from './components/MenuTab'
+import { IngredientsTab } from './components/IngredientsTab'
 
 export const MenuPage = () => {
-  const navigate = useNavigate()
   return (
     <Background opacity={true}>
-      <Container>
-        <Title text="MenuPage" />
-        <Section title="Day 1">
-          <Button
-            size="large"
-            variant="customGradient"
-            onClick={() => navigate('/recipe')}
-          >
-            Breakfast
-          </Button>
-          <Button
-            size="large"
-            variant="customGradient"
-            onClick={() => navigate('/recipe')}
-          >
-            Lunch
-          </Button>
-          <Button
-            size="large"
-            variant="customGradient"
-            onClick={() => navigate('/recipe')}
-          >
-            Dinner
-          </Button>
-        </Section>
-        <Section title="Day 2">
-          <Button
-            size="large"
-            variant="customGradient"
-            onClick={() => navigate('/recipe')}
-          >
-            Breakfast
-          </Button>
-          <Button
-            size="large"
-            variant="customGradient"
-            onClick={() => navigate('/recipe')}
-          >
-            Lunch
-          </Button>
-          <Button
-            size="large"
-            variant="customGradient"
-            onClick={() => navigate('/recipe')}
-          >
-            Dinner
-          </Button>
-        </Section>
-        <Section title="Day 3">
-          <Button
-            size="large"
-            variant="customGradient"
-            onClick={() => navigate('/recipe')}
-          >
-            Breakfast
-          </Button>
-          <Button
-            size="large"
-            variant="customGradient"
-            onClick={() => navigate('/recipe')}
-          >
-            Lunch
-          </Button>
-          <Button
-            size="large"
-            variant="customGradient"
-            onClick={() => navigate('/recipe')}
-          >
-            Dinner
-          </Button>
-        </Section>
-      </Container>
+      <div className="flex flex-col w-full items-center">
+        <Title text="Menu" />
+        <Tabs defaultValue="menu" className="w-full flex flex-col">
+          <TabsList>
+            <TabsTrigger value="menu">Menu</TabsTrigger>
+            <TabsTrigger value="ingredients">Ingredients</TabsTrigger>
+          </TabsList>
+          <TabsContent value="menu">
+            <MenuTab />
+          </TabsContent>
+          <TabsContent value="ingredients">
+            <IngredientsTab />
+          </TabsContent>
+        </Tabs>
+      </div>
     </Background>
   )
 }

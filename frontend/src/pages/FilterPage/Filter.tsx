@@ -13,7 +13,7 @@ export const FilterPage = () => {
   return (
     <Background opacity={true}>
       <Container>
-        <Title text="FilterPage" />
+        <Title text="Filters" />
         <div className="my-[20px] w-full">
           <DropDown
             title={'Excluded foods'}
@@ -30,12 +30,6 @@ export const FilterPage = () => {
             items={['small', 'medium', 'large']}
             multiSelect={false}
           />
-          <DropDown
-            title={'Number of people'}
-            items={['1', '2', '3', '1', '2', '3']}
-            multiSelect={false}
-          />
-
           <Tile text="Number of people">
             <NumberInput min={1} max={100} step={1} placeholder="1" />
           </Tile>
