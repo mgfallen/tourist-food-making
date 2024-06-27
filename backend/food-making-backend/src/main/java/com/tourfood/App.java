@@ -34,13 +34,14 @@ public class App {
 	public static void main(String[] args) {
 		if (args.length != 0 && args[0].equals("recipes")) {
 			System.out.println("Парсинг рецептов...");
-			
-			final String WEBSITE = "https://eda.ru/recepty/vypechka-deserty/tonkie-blini-na-moloke-16014";
+
+			final String WEBSITE = "https://1000.menu/cooking/9599-shashlyk-iz-shampinonov-na-mangale"; // TODO https://1000.menu/catalog/edim-na-prirode
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
-			final String CSSSELECTOR_INGREDIENTS = "div:has(> span[itemprop=\"nutrition\"]) + div > div > div:not(:first-of-type)";
-			final String CSSSELECTOR_INGREDIENT_NAME = "span[itemprop=\"recipeIngredient\"]";
-			final String CSSSELECTOR_INGREDIENT_QUANTITY = "> div > span:last-of-type";
-			
+			final String CSSSELECTOR_INGREDIENTS = "#recept-list > .ingredient";
+			final String CSSSELECTOR_INGREDIENT_NAME = ".name";
+			final String CSSSELECTOR_INGREDIENT_QUANTITY = ".value";
+			final String CSSSELECTOR_INGREDIENT_MEASURE = "select.recalc_s_num > option[selected]";
+
 			Document doc = null;
 			try {
 				doc = Jsoup.connect(WEBSITE).userAgent(WEBSITE_USERAGENT).get();
@@ -50,10 +51,10 @@ public class App {
 				System.exit(1);
 			}
 			Elements ingredients = doc.select(CSSSELECTOR_INGREDIENTS);
-			
+
 			for (Element ingredient : ingredients) {
 				try {
-					System.out.println(ingredient.select(CSSSELECTOR_INGREDIENT_NAME).first().text() + "; " + ingredient.select(CSSSELECTOR_INGREDIENT_QUANTITY).first().text());
+					System.out.println(ingredient.select(CSSSELECTOR_INGREDIENT_NAME).first().text() + "; " + ingredient.select(CSSSELECTOR_INGREDIENT_QUANTITY).first().text() + "; " + ingredient.select(CSSSELECTOR_INGREDIENT_MEASURE).first().text());
 				} catch (java.lang.NullPointerException e) {
 					e.printStackTrace();
 				}
