@@ -1,12 +1,27 @@
-import { Button } from '@/components/ui/button'
-import { useNavigate } from 'react-router-dom'
+import { Background } from '@/components/Background'
+import { Title } from '@/components/Title'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { MenuTab } from './components/MenuTab'
+import { IngredientsTab } from './components/IngredientsTab'
 
 export const MenuPage = () => {
-  const navigate = useNavigate()
   return (
-    <div className="flex items-center justify-center flex-col">
-      <h1 className="text-center bg-red-200">MenuPage</h1>
-      <Button onClick={() => navigate('/recipe')}>Soup</Button>
-    </div>
+    <Background opacity={true}>
+      <div className="flex flex-col w-full items-center">
+        <Title text="Menu" />
+        <Tabs defaultValue="menu" className="w-full flex flex-col">
+          <TabsList>
+            <TabsTrigger value="menu">Menu</TabsTrigger>
+            <TabsTrigger value="ingredients">Ingredients</TabsTrigger>
+          </TabsList>
+          <TabsContent value="menu">
+            <MenuTab />
+          </TabsContent>
+          <TabsContent value="ingredients">
+            <IngredientsTab />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </Background>
   )
 }
