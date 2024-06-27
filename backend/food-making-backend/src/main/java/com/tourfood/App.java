@@ -58,7 +58,16 @@ public class App {
 			for (Element recipe : recipes) {
 				String recipeLink = recipe.select(CSSSELECTOR_RECIPE_LINK).attr("href");
 				if (recipeLink != null) {
-					System.out.println(WEBSITE_DOMAIN + recipeLink);
+					recipeLink = WEBSITE_DOMAIN + recipeLink;
+					Document recipeWebpage = null;
+					try {
+						recipeWebpage = Jsoup.connect(recipeLink).userAgent(WEBSITE_USERAGENT).get();
+					} catch (IOException e) {
+						System.err.println("Не удалось связаться с веб-страницей «" + recipeLink + "».");
+						e.printStackTrace();
+						System.exit(1);
+					}
+					System.out.println(recipeWebpage);
 				}
 			}
 			System.exit(0);
