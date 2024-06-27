@@ -32,7 +32,7 @@
 2. Запустите сервис с помощью Docker Compose:
 
     ```shп
-    docker compose up
+    docker compose up -d
     ```
 
 3. Откройте браузер и перейдите по адресу `http://localhost:8080`, чтобы получить доступ к сервису.
