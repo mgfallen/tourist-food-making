@@ -53,7 +53,7 @@ public class App {
 				e.printStackTrace();
 				System.exit(1);
 			}
-			
+
 			Elements recipes = doc.select(CSSSELECTOR_RECIPES);
 			for (Element recipe : recipes) {
 				String recipeLink = recipe.select(CSSSELECTOR_RECIPE_LINK).attr("href");
@@ -67,20 +67,30 @@ public class App {
 						e.printStackTrace();
 						System.exit(1);
 					}
-					System.out.println(recipeWebpage);
-				}
-			}
-			System.exit(0);
-			
-			
-			Elements ingredients = doc.select(CSSSELECTOR_INGREDIENTS);
+					Elements ingredients = recipeWebpage.select(CSSSELECTOR_INGREDIENTS);
+					for (Element ingredient : ingredients) {
+						boolean ingredientRequired = true;
+						String ingredientName = null; // TODO Нужны ли здесь такие null'ы?
+						ingredientName = ingredient.select(CSSSELECTOR_INGREDIENT_NAME).first().text();
+						String ingredientQuantity = null;
+						ingredientQuantity = ingredient.select(CSSSELECTOR_INGREDIENT_QUANTITY).first().text();
+						String ingredientMeasure = null;
+						try {
+							ingredientMeasure = ingredient.select(CSSSELECTOR_INGREDIENT_MEASURE).first().text();
+						} catch (NullPointerException e) {
+							ingredientRequired = false;
+						}
 
-			for (Element ingredient : ingredients) {
-				try {
-					System.out.println(ingredient.select(CSSSELECTOR_INGREDIENT_NAME).first().text() + "; " + ingredient.select(CSSSELECTOR_INGREDIENT_QUANTITY).first().text() + "; " + ingredient.select(CSSSELECTOR_INGREDIENT_MEASURE).first().text());
-				} catch (java.lang.NullPointerException e) {
-					e.printStackTrace();
+						if (ingredientRequired == true) {
+							System.out.println(ingredientName + " — " + ingredientQuantity + " " + ingredientMeasure);								
+						} else {
+							System.out.println(ingredientName);
+						}
+					}
 				}
+				System.out.println();
+				System.out.println();
+				System.out.println();
 			}
 		} else {
 			System.out.println("Парсинг продуктов...");
