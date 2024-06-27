@@ -22,7 +22,6 @@ module.exports = {
         customPurple: '#9580FF',
         customPink: '#FF80A1',
         customBlack: '#000000cc',
-        customWhite: '#000000',
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
