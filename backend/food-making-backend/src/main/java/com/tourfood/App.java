@@ -78,7 +78,7 @@ public class App {
 
 					String recipeServings = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS).first().attr(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR);
 					System.out.println("Количество порций: " + recipeServings + ".");
-					System.out.println();
+					System.out.println("Ингредиенты:");
 					
 					Elements ingredients = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENTS);
 					for (Element ingredient : ingredients) {
@@ -94,6 +94,16 @@ public class App {
 							ingredientRequired = false;
 						}
 
+						String[] ingredientQuantityConverted = new String[2];
+						try {
+							ingredientQuantityConverted = measureConvert(ingredientQuantity, ingredientMeasure);
+						} catch (IllegalArgumentException e) {
+							System.err.println();
+							e.printStackTrace();
+						}
+						ingredientQuantity = ingredientQuantityConverted[0];
+						ingredientMeasure = ingredientQuantityConverted[1];
+						
 						if (ingredientRequired == true) {
 							System.out.println(ingredientName + " — " + ingredientQuantity + " " + ingredientMeasure);								
 						} else {
@@ -329,5 +339,32 @@ public class App {
 		}
 
 		return null;
+	}
+	
+	/**
+	 * <p>Конвертация в стандартные меры системы СИ
+	 * Если 2-ым аргументом подаётся «шт.» и др. мера, то она остаётся неизменным
+	 * @param ingredientQuantity
+	 * @param ingredientMeasure
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	private static String[] measureConvert(String ingredientQuantity, String ingredientMeasure) {
+		String[] ingredientMeasureConverted = {ingredientQuantity, ingredientMeasure};
+		
+		if (ingredientMeasureConverted[1] != null) {
+			switch (ingredientMeasureConverted[1].toLowerCase()) {
+			case "кг":
+				ingredientMeasureConverted[0] = Integer.toString(Integer.parseInt(ingredientMeasureConverted[0]) * 1000);
+				ingredientMeasureConverted[1] = "г";
+				break;
+			case "л":
+				ingredientMeasureConverted[0] = Integer.toString(Integer.parseInt(ingredientMeasureConverted[0]) * 1000);
+				ingredientMeasureConverted[1] = "мл";
+				break;
+			}
+		}
+
+		return ingredientMeasureConverted;
 	}
 }
