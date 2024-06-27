@@ -19,7 +19,7 @@ services:
     depends_on:
       - java-app
       - go-app
-      - openapi-generator
+      - openapi
 
   db:
     image: postgres:16.3
