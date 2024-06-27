@@ -35,28 +35,28 @@ public class App {
 		if (args.length != 0 && args[0].equals("recipes")) {
 			System.out.println("Парсинг рецептов...");
 
-			final String WEBSITE = "https://1000.menu/catalog/edim-na-prirode";
+			final String WEBSITE_URL = "https://1000.menu/catalog/edim-na-prirode";
 			final String WEBSITE_DOMAIN = "https://1000.menu";
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
-			final String CSSSELECTOR_RECIPES = ".cooking-block > .cn-item:not(.ads_enabled)";
-			final String CSSSELECTOR_RECIPE_LINK = "a.h5";
-			final String CSSSELECTOR_INGREDIENTS = "#recept-list > .ingredient";
-			final String CSSSELECTOR_INGREDIENT_NAME = ".name";
-			final String CSSSELECTOR_INGREDIENT_QUANTITY = ".value";
-			final String CSSSELECTOR_INGREDIENT_MEASURE = "select.recalc_s_num > option[selected]";
+			final String CSSSELECTOR_WEBSITE_RECIPES = ".cooking-block > .cn-item:not(.ads_enabled)";
+			final String CSSSELECTOR_WEBSITE_RECIPELINK = "a.h5";
+			final String CSSSELECTOR_RECIPE_INGREDIENTS = "#recept-list > .ingredient";
+			final String CSSSELECTOR_RECIPE_INGREDIENT_NAME = ".name";
+			final String CSSSELECTOR_RECIPE_INGREDIENT_QUANTITY = ".value";
+			final String CSSSELECTOR_RECIPE_INGREDIENT_MEASURE = "select.recalc_s_num > option[selected]";
 
 			Document doc = null;
 			try {
-				doc = Jsoup.connect(WEBSITE).userAgent(WEBSITE_USERAGENT).get();
+				doc = Jsoup.connect(WEBSITE_URL).userAgent(WEBSITE_USERAGENT).get();
 			} catch (IOException e) {
-				System.err.println("Не удалось связаться с веб-страницей «" + WEBSITE + "».");
+				System.err.println("Не удалось связаться с веб-страницей «" + WEBSITE_URL + "».");
 				e.printStackTrace();
 				System.exit(1);
 			}
 
-			Elements recipes = doc.select(CSSSELECTOR_RECIPES);
+			Elements recipes = doc.select(CSSSELECTOR_WEBSITE_RECIPES);
 			for (Element recipe : recipes) {
-				String recipeLink = recipe.select(CSSSELECTOR_RECIPE_LINK).attr("href");
+				String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).attr("href");
 				if (recipeLink != null) {
 					recipeLink = WEBSITE_DOMAIN + recipeLink;
 					Document recipeWebpage = null;
@@ -67,16 +67,16 @@ public class App {
 						e.printStackTrace();
 						System.exit(1);
 					}
-					Elements ingredients = recipeWebpage.select(CSSSELECTOR_INGREDIENTS);
+					Elements ingredients = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENTS);
 					for (Element ingredient : ingredients) {
 						boolean ingredientRequired = true;
 						String ingredientName = null; // TODO Нужны ли здесь такие null'ы?
-						ingredientName = ingredient.select(CSSSELECTOR_INGREDIENT_NAME).first().text();
+						ingredientName = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_NAME).first().text();
 						String ingredientQuantity = null;
-						ingredientQuantity = ingredient.select(CSSSELECTOR_INGREDIENT_QUANTITY).first().text();
+						ingredientQuantity = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_QUANTITY).first().text();
 						String ingredientMeasure = null;
 						try {
-							ingredientMeasure = ingredient.select(CSSSELECTOR_INGREDIENT_MEASURE).first().text();
+							ingredientMeasure = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_MEASURE).first().text();
 						} catch (NullPointerException e) {
 							ingredientRequired = false;
 						}
