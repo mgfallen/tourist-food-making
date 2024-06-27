@@ -40,11 +40,6 @@ public class Recipe {
     @Column
     private String mealtime;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "order_recipe",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "order_id"))
-    private Set<Order> orders = new HashSet<>();
 
 
 

@@ -23,7 +23,7 @@ public class Product {
     private Integer fats;
 
     @Column(nullable = false)
-    private Integer carbohydrates;
+    private Integer carbonates;
 
     @Column(length = 150)
     private String link;

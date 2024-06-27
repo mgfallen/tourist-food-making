@@ -2,9 +2,14 @@ package org.example.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.support.ProductsList;
+import org.example.support.RecipeList;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -25,11 +30,8 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "order_recipe",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "recipe_id"))
-    private Set<Recipe> recipes = new HashSet<>();
+    @JdbcTypeCode(SqlTypes.JSON)
+    private List<RecipeList> recipes;
 
     @PrePersist
     protected void onCreate() {
