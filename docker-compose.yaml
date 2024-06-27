@@ -1,16 +1,11 @@
 version: '3.3'
 
 services:
-  swagger-ui:
-    image: swaggerapi/swagger-ui
-    container_name: swagger-ui
-    environment:
-      SWAGGER_JSON: /etc/swagger/swagger.yaml
+  openapi-generator:
+    image: openapitools/openapi-generator-cli
     volumes:
-      - ./swagger/swagger.yaml:/usr/share/nginx/html/swagger.yaml
-    ports:
-      - "8080:8080"
-
+      - .:/app
+    command: generate -i /app/petstore.yaml -g html2 -o /app/petstore_html
 
   nginx:
     image: nginx:1.27.0
@@ -23,8 +18,7 @@ services:
     depends_on:
       - java-app
       - go-app
-      - swagger-ui
-
+      - openapi-generator
 
   db:
     image: postgres:16.3
