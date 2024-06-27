@@ -6,4 +6,6 @@ VOLUME /app
 
 WORKDIR /app
 
-CMD ["generate", "-i", "swagger.yaml", "-g", "html2", "-o", "swagger_html"]
+RUN java -jar openapi-generator-cli.jar generate -i /app/swagger.yaml -g html2 -o /app/swagger_html --additional-properties=title=API\ Docs,\version=1.0.0,\description=API\ Documentation
+
+RUN mv /app/swagger_html/index.html /app/swagger_html/swagger/index.html
