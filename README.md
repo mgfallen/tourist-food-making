@@ -104,7 +104,8 @@ curl -X POST http://localhost:8080/api/v1/recommendation \
   }
 ]
 ```
-Получить список всех продуктов в рекомендации:
+- **Метод:** `GET`
+- **URL:** `/products/{order_id}`
 ```json
 [
   {
