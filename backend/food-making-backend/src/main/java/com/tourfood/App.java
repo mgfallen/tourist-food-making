@@ -34,6 +34,7 @@ public class App {
 	public static void main(String[] args) {
 		if (args.length != 0 && args[0].equals("recipes")) {
 			System.out.println("Парсинг рецептов...");
+			System.out.println();
 
 			final String WEBSITE_URL = "https://1000.menu/catalog/edim-na-prirode";
 			final String WEBSITE_DOMAIN = "https://1000.menu";
@@ -45,7 +46,9 @@ public class App {
 			final String CSSSELECTOR_RECIPE_INGREDIENT_NAME = ".name";
 			final String CSSSELECTOR_RECIPE_INGREDIENT_QUANTITY = ".value";
 			final String CSSSELECTOR_RECIPE_INGREDIENT_MEASURE = "select.recalc_s_num > option[selected]";
-
+			final String CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS = "#yield_num_input";
+			final String CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR = "value";
+			
 			Document doc = null;
 			try {
 				doc = Jsoup.connect(WEBSITE_URL).userAgent(WEBSITE_USERAGENT).get();
@@ -61,7 +64,7 @@ public class App {
 				String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).first().attr("href");
 				
 				System.out.println(recipeName);
-				System.out.println();
+				
 				if (recipeLink != null) {
 					recipeLink = WEBSITE_DOMAIN + recipeLink;
 					Document recipeWebpage = null;
@@ -72,6 +75,11 @@ public class App {
 						e.printStackTrace();
 						System.exit(1);
 					}
+
+					String recipeServings = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS).first().attr(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR);
+					System.out.println("Количество порций: " + recipeServings + ".");
+					System.out.println();
+					
 					Elements ingredients = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENTS);
 					for (Element ingredient : ingredients) {
 						boolean ingredientRequired = true;
