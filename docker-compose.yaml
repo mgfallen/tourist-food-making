@@ -1,6 +1,14 @@
 version: '3.3'
 
 services:
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    environment:
+      SWAGGER_JSON: /usr/share/nginx/html/swagger.yaml
+    volumes:
+      - ./swagger/swagger.yaml:/usr/share/nginx/html/swagger.yaml
+
+
   nginx:
     image: nginx:1.27.0
     container_name: nginx
@@ -48,3 +56,6 @@ volumes:
       type: none
       o: bind
       device: /home/database-mount/pgdata
+  swagger-ui:
+    external: false
+
