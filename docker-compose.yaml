@@ -5,10 +5,9 @@ services:
     image: swaggerapi/swagger-ui
     container_name: swagger
     environment:
-      SWAGGER_JSON: /usr/share/nginx/html/swagger.yaml
+      SWAGGER_JSON: /etc/swagger/swagger.yaml
     volumes:
       - ./swagger/swagger.yaml:/usr/share/nginx/html/swagger.yaml
-
 
   nginx:
     image: nginx:1.27.0
