@@ -1,4 +1,4 @@
-version: '3.3'
+version: "3.3"
 
 services:
   openapi:
@@ -6,7 +6,8 @@ services:
       context: .
       dockerfile: swagger/Dockerfile
     volumes:
-      - ./swagger:/app
+      - ./swagger/swagger.yaml:/usr/share/nginx/html/swagger.yaml
+
 
   nginx:
     image: nginx:1.27.0
@@ -49,6 +50,16 @@ services:
     depends_on:
       - db
 
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    env_file:
+      - ./frontend/.env
+
 volumes:
   pgdata:
     driver: local
@@ -58,4 +69,3 @@ volumes:
       device: /home/database-mount/pgdata
   swagger-ui:
     external: false
-
