@@ -34,7 +34,7 @@ services:
   java-app:
     container_name: java-app
     build:
-      context: ./bgackend/food-making-backend
+      context: ./backend/food-making-backend
       dockerfile: Dockerfile
     depends_on:
       - db
