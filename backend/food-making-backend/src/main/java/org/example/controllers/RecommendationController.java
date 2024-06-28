@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/v2/recommendation")
+@RequestMapping("api/v1/recommendation")
 public class RecommendationController {
     @Autowired
     private RecommendationDataService recommendationDataService;
