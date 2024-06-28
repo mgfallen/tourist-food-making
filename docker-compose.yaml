@@ -30,6 +30,8 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - /home/database-mount/pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
 
   java-app:
     container_name: java-app
@@ -38,6 +40,13 @@ services:
       dockerfile: Dockerfile
     depends_on:
       - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+
 
   go-app:
     image: golang:1.16
