@@ -1,4 +1,3 @@
-
 FROM maven:3.9-amazoncorretto-17 AS build
 
 WORKDIR /app-back-build
