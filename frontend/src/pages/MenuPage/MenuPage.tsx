@@ -5,7 +5,7 @@ import { MenuTab } from './components/MenuTab'
 import { IngredientsTab } from './components/IngredientsTab'
 import { useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
-import { CircleX, Cross } from 'lucide-react'
+import { CircleX, Container, Cross } from 'lucide-react'
 
 export const MenuPage = () => {
   const navigate = useNavigate()
