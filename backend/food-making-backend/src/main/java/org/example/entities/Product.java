@@ -1,7 +1,8 @@
 package org.example.entities;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
 
 @Entity
 @Data
@@ -22,7 +23,7 @@ public class Product {
     private Integer fats;
 
     @Column(nullable = false)
-    private Integer carbohydrates;
+    private Integer carbonates;
 
     @Column(length = 150)
     private String link;
@@ -36,8 +37,11 @@ public class Product {
     @Column(name="pack_weight")
     private Integer packWeight;
 
+    @Column(name = "perishable")
     private Boolean perishable;
 
     @Column(length = 50)
     private String category;
+
+
 }

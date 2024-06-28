@@ -1,6 +1,13 @@
-version: '3.8'
+version: "3.3"
 
 services:
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    environment:
+      SWAGGER_JSON: /usr/share/nginx/html/swagger.yaml
+    volumes:
+      - ./swagger/swagger.yaml:/usr/share/nginx/html/swagger.yaml
+
   nginx:
     image: nginx:1.27.0
     container_name: nginx
@@ -14,7 +21,7 @@ services:
       - go-app
 
   db:
-    image: postgres:1.16
+    image: postgres:16.3
     container_name: postgres
     environment:
       POSTGRES_DB: postgres
@@ -24,7 +31,7 @@ services:
       - /home/database-mount/pgdata:/var/lib/postgresql/data
 
   java-app:
-    image: openjdk:17-jre-slim
+    image: openjdk:17-jdk-alpine
     container_name: java-app
     build:
       context: ./backend/food-making-backend
@@ -41,6 +48,16 @@ services:
     depends_on:
       - db
 
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    env_file:
+      - ./frontend/.env
+
 volumes:
   pgdata:
     driver: local
@@ -48,3 +65,5 @@ volumes:
       type: none
       o: bind
       device: /home/database-mount/pgdata
+  swagger-ui:
+    external: false
