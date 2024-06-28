@@ -17,6 +17,6 @@ class InlineKeyboard:
     def start(self):
 
         inline_keyboard = [
-            [types.InlineKeyboardButton(text='Открыть приложение', web_app=WebAppInfo(url="https://our_server/start"))]
+            [types.InlineKeyboardButton(text='Открыть приложение', web_app=WebAppInfo(url="https://158.160.2.48/start"))]
         ]
         return types.InlineKeyboardMarkup(inline_keyboard=inline_keyboard)
