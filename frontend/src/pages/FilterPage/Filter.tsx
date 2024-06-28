@@ -1,0 +1,51 @@
+import { Background } from '@/components/Background'
+import { Container } from '@/components/Container'
+import { Tile } from '@/components/Tile'
+import { Title } from '@/components/Title'
+
+import { Button } from '@/components/ui/button'
+
+import { useNavigate } from 'react-router-dom'
+import { DropDown } from './components/DropDown'
+import { NumberInput } from './components/NumberInput'
+import { Cross } from 'lucide-react'
+export const FilterPage = () => {
+  const navigate = useNavigate()
+  return (
+    <Background opacity={true}>
+      <Container>
+        <Title text="Filters" onClick={() => navigate('/')} />
+        <div className="my-[20px] w-full">
+          <DropDown
+            title={'Excluded foods'}
+            items={['eggs', 'milk', 'sugar', 'gluten']}
+            multiSelect={true}
+          />
+          <DropDown
+            title={'Available dishes'}
+            items={['pot', 'microwave', 'pan']}
+            multiSelect={true}
+          />
+          <DropDown
+            title={'Budget'}
+            items={['small', 'medium', 'large']}
+            multiSelect={false}
+          />
+          <Tile text="Number of people">
+            <NumberInput min={1} max={100} step={1} placeholder="1" />
+          </Tile>
+          <Tile text="Number of days">
+            <NumberInput min={1} max={100} step={1} placeholder="1" />
+          </Tile>
+        </div>
+        <Button
+          size="custom"
+          variant="custom"
+          onClick={() => navigate('/menu')}
+        >
+          Search
+        </Button>
+      </Container>
+    </Background>
+  )
+}
