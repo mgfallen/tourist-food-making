@@ -1,6 +1,7 @@
 package org.example.controllers;
 
 import org.apache.coyote.Response;
+import org.example.DTO.OrderResponseDTO;
 import org.example.DTO.RecParameters;
 import org.example.DTO.RecipeDTO;
 import org.example.DTO.RecommendationDTO;
@@ -151,8 +152,16 @@ public class RecommendationController {
         order.setRecipes(recs);
         orderDataService.createOrder(order);
 
+        Long orderID = order.getOrderId(); // Assuming Order has a method to get the order ID
 
-        return new ResponseEntity<>(recs, HttpStatus.OK);
+        OrderResponseDTO response = new OrderResponseDTO();
+        response.setOrderID(orderID);
+        response.setRecommendations(recs);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+
+
     }
 
 }
