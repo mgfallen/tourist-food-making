@@ -35,10 +35,9 @@ public class App {
 		// TODO Позаботиться про безопасность кода: сменить public на private где нужно, поставить static где нужно, сделать геттеры и сеттеры и т.д.
 		// Файл слишком большой, вынести подкоманды в отдельные классы
 		if (args.length != 0 && args[0].equals("recipes")) {
-			System.out.println("Парсинг рецептов...");
-			System.out.println();
-
-			final String WEBSITE_URL = "https://1000.menu/catalog/edim-na-prirode";
+			final String WEBSITE_URL_BREAKFAST = "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[188]=188";
+			final String WEBSITE_URL_LUNCH = "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[12]=12"; // TODO Отсюда берутся походные супы
+			final String WEBSITE_URL_DINNER = "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[819]=819";
 			final String WEBSITE_DOMAIN = "https://1000.menu";
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
 			final String CSSSELECTOR_WEBSITE_RECIPES = ".cooking-block > .cn-item:not(.ads_enabled)";
@@ -52,98 +51,105 @@ public class App {
 			final String CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR = "value";
 			final String OUTPUT_JSON_FILEPATH = "recipes.json";
 
-			Document doc = null;
-			try {
-				doc = Jsoup.connect(WEBSITE_URL).userAgent(WEBSITE_USERAGENT).get();
-			} catch (IOException e) {
-				System.err.println("Не удалось связаться с веб-страницей «" + WEBSITE_URL + "».");
-				e.printStackTrace();
-				System.exit(1);
-			}
+			System.out.println("Парсинг рецептов...");
+			System.out.println();
 
-			ObjectMapper objectMapper = new ObjectMapper();
-			JsonFactory jsonFactory = new JsonFactory(objectMapper);
-			File file = new File(OUTPUT_JSON_FILEPATH);
-			
-			try (FileWriter fileWriter = new FileWriter(file); JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)) {
-				jsonGenerator.writeStartArray();
+			String[] urls = {WEBSITE_URL_BREAKFAST, WEBSITE_URL_LUNCH, WEBSITE_URL_DINNER};
 
-				Elements recipes = doc.select(CSSSELECTOR_WEBSITE_RECIPES);
-				for (Element recipe : recipes) {
-					String recipeName = recipe.select(CSSSELECTOR_WEBSITE_RECIPENAME).first().text();
-					String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).first().attr("href");
-
-					System.out.println(recipeName);
-
-					if (recipeLink != null) {
-						recipeLink = WEBSITE_DOMAIN + recipeLink;
-
-						Document recipeWebpage = null;
-						try {
-							recipeWebpage = Jsoup.connect(recipeLink).userAgent(WEBSITE_USERAGENT).get();
-						} catch (IOException e) {
-							System.err.println("Не удалось связаться с веб-страницей «" + recipeLink + "».");
-							e.printStackTrace();
-							System.exit(1);
-						}
-
-						int recipeServings = Integer.parseInt(recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS).first().attr(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR));
-						System.out.println("Ингредиенты на 1 порцию:");
-
-						Elements ingredients = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENTS);
-						for (Element ingredient : ingredients) {
-							boolean ingredientRequired = true;
-							String ingredientName = null; // TODO Нужны ли здесь такие null'ы?
-							ingredientName = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_NAME).first().text();
-							float ingredientQuantity = 0f;
-							String ingredientMeasure = null;
-							try {
-								ingredientMeasure = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_MEASURE).first().text();
-							} catch (NullPointerException e) {
-								ingredientRequired = false;
-							}
-
-							if (ingredientRequired == true) {
-								ingredientQuantity = Float.parseFloat(ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_QUANTITY).first().text());
-							}
-
-							String[] ingredientQuantityConverted = new String[2];
-							if (ingredientRequired == true) {
-								try {
-									ingredientQuantityConverted = measureConvert(ingredientQuantity, ingredientMeasure);
-								} catch (IllegalArgumentException e) {
-									System.err.println();
-									e.printStackTrace();
-								}
-								ingredientQuantity = Float.parseFloat(ingredientQuantityConverted[0]); // TODO Это костыль
-								ingredientMeasure = ingredientQuantityConverted[1];
-							}
-
-							float ingredientQuantityPerServing = ingredientQuantity / recipeServings;
-							String ingredientQuantityString = String.valueOf(ingredientQuantityPerServing); // TODO Костыль
-							
-							jsonGenerator.writeStartObject();
-							if (ingredientRequired == true) {
-								System.out.println(ingredientName + " — " + ingredientQuantityString + " " + ingredientMeasure);
-								jsonGenerator.writeStringField("ingredient_name", ingredientName);
-								jsonGenerator.writeStringField("ingredient_quantity", ingredientQuantityString);
-								jsonGenerator.writeStringField("ingredient_quantity", ingredientMeasure);
-							} else {
-								System.out.println(ingredientName);
-								jsonGenerator.writeStringField("ingredient_name", ingredientName);
-							}
-							jsonGenerator.writeEndObject();
-							jsonGenerator.flush();
-						}
-					}
-					System.out.println();
-					System.out.println();
-					System.out.println();
+			for (String url : urls) {
+				Document doc = null;
+				try {
+					doc = Jsoup.connect(url).userAgent(WEBSITE_USERAGENT).get();
+				} catch (IOException e) {
+					System.err.println("Не удалось связаться с веб-страницей «" + url + "».");
+					e.printStackTrace();
+					System.exit(1);
 				}
 
-				jsonGenerator.writeEndArray();
-			} catch (IOException e) {
-				e.printStackTrace();
+				ObjectMapper objectMapper = new ObjectMapper();
+				JsonFactory jsonFactory = new JsonFactory(objectMapper);
+				File file = new File(OUTPUT_JSON_FILEPATH);
+
+				try (FileWriter fileWriter = new FileWriter(file); JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)) {
+					jsonGenerator.writeStartArray();
+
+					Elements recipes = doc.select(CSSSELECTOR_WEBSITE_RECIPES);
+					for (Element recipe : recipes) {
+						String recipeName = recipe.select(CSSSELECTOR_WEBSITE_RECIPENAME).first().text();
+						String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).first().attr("href");
+
+						System.out.println(recipeName);
+
+						if (recipeLink != null) {
+							recipeLink = WEBSITE_DOMAIN + recipeLink;
+
+							Document recipeWebpage = null;
+							try {
+								recipeWebpage = Jsoup.connect(recipeLink).userAgent(WEBSITE_USERAGENT).get();
+							} catch (IOException e) {
+								System.err.println("Не удалось связаться с веб-страницей «" + recipeLink + "».");
+								e.printStackTrace();
+								System.exit(1);
+							}
+
+							int recipeServings = Integer.parseInt(recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS).first().attr(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR));
+							System.out.println("Ингредиенты на 1 порцию:");
+
+							Elements ingredients = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENTS);
+							for (Element ingredient : ingredients) {
+								boolean ingredientRequired = true;
+								String ingredientName = null; // TODO Нужны ли здесь такие null'ы?
+								ingredientName = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_NAME).first().text();
+								float ingredientQuantity = 0f;
+								String ingredientMeasure = null;
+								try {
+									ingredientMeasure = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_MEASURE).first().text();
+								} catch (NullPointerException e) {
+									ingredientRequired = false;
+								}
+
+								if (ingredientRequired == true) {
+									ingredientQuantity = Float.parseFloat(ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_QUANTITY).first().text());
+								}
+
+								String[] ingredientQuantityConverted = new String[2];
+								if (ingredientRequired == true) {
+									try {
+										ingredientQuantityConverted = measureConvert(ingredientQuantity, ingredientMeasure);
+									} catch (IllegalArgumentException e) {
+										System.err.println();
+										e.printStackTrace();
+									}
+									ingredientQuantity = Float.parseFloat(ingredientQuantityConverted[0]); // TODO Это костыль
+									ingredientMeasure = ingredientQuantityConverted[1];
+								}
+
+								float ingredientQuantityPerServing = ingredientQuantity / recipeServings;
+								String ingredientQuantityString = String.valueOf(ingredientQuantityPerServing); // TODO Костыль
+
+								jsonGenerator.writeStartObject();
+								if (ingredientRequired == true) {
+									System.out.println(ingredientName + " — " + ingredientQuantityString + " " + ingredientMeasure);
+									jsonGenerator.writeStringField("ingredient_name", ingredientName);
+									jsonGenerator.writeStringField("ingredient_quantity", ingredientQuantityString);
+									jsonGenerator.writeStringField("ingredient_quantity", ingredientMeasure);
+								} else {
+									System.out.println(ingredientName);
+									jsonGenerator.writeStringField("ingredient_name", ingredientName);
+								}
+								jsonGenerator.writeEndObject();
+								jsonGenerator.flush();
+							}
+						}
+						System.out.println();
+						System.out.println();
+						System.out.println();
+					}
+
+					jsonGenerator.writeEndArray();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		} else {
 			final String WEBSITE_DOMAIN = "https://yarcheplus.ru";
@@ -164,7 +170,7 @@ public class App {
 
 			System.out.println("Парсинг продуктов...");
 			System.out.println();
-			
+
 			Document doc = null;
 			String currWebpage = new String(WEBSITE);
 			String nextPageLink = null;
