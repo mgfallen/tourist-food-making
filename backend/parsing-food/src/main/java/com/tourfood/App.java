@@ -67,6 +67,7 @@ public class App {
 				
 				if (recipeLink != null) {
 					recipeLink = WEBSITE_DOMAIN + recipeLink;
+					
 					Document recipeWebpage = null;
 					try {
 						recipeWebpage = Jsoup.connect(recipeLink).userAgent(WEBSITE_USERAGENT).get();
@@ -76,24 +77,26 @@ public class App {
 						System.exit(1);
 					}
 
-					String recipeServings = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS).first().attr(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR);
-					System.out.println("Количество порций: " + recipeServings + ".");
-					System.out.println("Ингредиенты:");
+					int recipeServings = Integer.parseInt(recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS).first().attr(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR));
+					System.out.println("Ингредиенты на 1 порцию:");
 					
 					Elements ingredients = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENTS);
 					for (Element ingredient : ingredients) {
 						boolean ingredientRequired = true;
 						String ingredientName = null; // TODO Нужны ли здесь такие null'ы?
 						ingredientName = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_NAME).first().text();
-						String ingredientQuantity = null;
-						ingredientQuantity = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_QUANTITY).first().text();
+						float ingredientQuantity = 0f;
 						String ingredientMeasure = null;
 						try {
 							ingredientMeasure = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_MEASURE).first().text();
 						} catch (NullPointerException e) {
 							ingredientRequired = false;
 						}
-
+						
+						if (ingredientRequired == true) {
+							ingredientQuantity = Float.parseFloat(ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_QUANTITY).first().text());
+						}
+						
 						String[] ingredientQuantityConverted = new String[2];
 						if (ingredientRequired == true) {
 							try {
@@ -102,12 +105,14 @@ public class App {
 								System.err.println();
 								e.printStackTrace();
 							}
+							ingredientQuantity = Float.parseFloat(ingredientQuantityConverted[0]); // TODO Это костыль
+							ingredientMeasure = ingredientQuantityConverted[1];
 						}
-						ingredientQuantity = ingredientQuantityConverted[0];
-						ingredientMeasure = ingredientQuantityConverted[1];
+						
+						float ingredientQuantityPerServing = ingredientQuantity / recipeServings;
 						
 						if (ingredientRequired == true) {
-							System.out.println(ingredientName + " — " + ingredientQuantity + " " + ingredientMeasure);
+							System.out.println(ingredientName + " — " + ingredientQuantityPerServing + " " + ingredientMeasure);
 						} else {
 							System.out.println(ingredientName);
 						}
@@ -351,21 +356,21 @@ public class App {
 	 * @return
 	 * @throws IllegalArgumentException
 	 */
-	private static String[] measureConvert(String ingredientQuantity, String ingredientMeasure) {
-		float ingredientQuantityFloat = Float.parseFloat(ingredientQuantity);
-
-		String[] ingredientMeasureConverted = {String.valueOf(ingredientQuantityFloat), ingredientMeasure};
+	private static String[] measureConvert(float ingredientQuantity, String ingredientMeasure) {
+		String[] ingredientMeasureConverted = {String.valueOf(ingredientQuantity), ingredientMeasure};
 
 		if (ingredientMeasureConverted[1] != null) {
-			switch (ingredientMeasureConverted[1].toLowerCase()) {
-			case "кг":
-				ingredientMeasureConverted[0] = String.valueOf(ingredientQuantityFloat *= 1000);
-				ingredientMeasureConverted[1] = "г";
-				break;
-			case "л":
-				ingredientMeasureConverted[0] = String.valueOf(ingredientQuantityFloat *= 1000);
-				ingredientMeasureConverted[1] = "мл";
-				break;
+			if (ingredientMeasureConverted[1] != "") {
+				switch (ingredientMeasureConverted[1].toLowerCase()) {
+				case "кг":
+					ingredientMeasureConverted[0] = String.valueOf(ingredientQuantity *= 1000);
+					ingredientMeasureConverted[1] = "г";
+					break;
+				case "л":
+					ingredientMeasureConverted[0] = String.valueOf(ingredientQuantity *= 1000);
+					ingredientMeasureConverted[1] = "мл";
+					break;
+				}
 			}
 		}
 
