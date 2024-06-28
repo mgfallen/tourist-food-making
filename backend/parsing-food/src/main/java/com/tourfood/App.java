@@ -48,7 +48,8 @@ public class App {
 			final String CSSSELECTOR_RECIPE_INGREDIENT_MEASURE = "select.recalc_s_num > option[selected]";
 			final String CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS = "#yield_num_input";
 			final String CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR = "value";
-			
+			final String OUTPUT_JSON_FILEPATH = "recipes.json";
+
 			Document doc = null;
 			try {
 				doc = Jsoup.connect(WEBSITE_URL).userAgent(WEBSITE_USERAGENT).get();
@@ -62,12 +63,12 @@ public class App {
 			for (Element recipe : recipes) {
 				String recipeName = recipe.select(CSSSELECTOR_WEBSITE_RECIPENAME).first().text();
 				String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).first().attr("href");
-				
+
 				System.out.println(recipeName);
-				
+
 				if (recipeLink != null) {
 					recipeLink = WEBSITE_DOMAIN + recipeLink;
-					
+
 					Document recipeWebpage = null;
 					try {
 						recipeWebpage = Jsoup.connect(recipeLink).userAgent(WEBSITE_USERAGENT).get();
@@ -79,7 +80,7 @@ public class App {
 
 					int recipeServings = Integer.parseInt(recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS).first().attr(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR));
 					System.out.println("Ингредиенты на 1 порцию:");
-					
+
 					Elements ingredients = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENTS);
 					for (Element ingredient : ingredients) {
 						boolean ingredientRequired = true;
@@ -92,11 +93,11 @@ public class App {
 						} catch (NullPointerException e) {
 							ingredientRequired = false;
 						}
-						
+
 						if (ingredientRequired == true) {
 							ingredientQuantity = Float.parseFloat(ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_QUANTITY).first().text());
 						}
-						
+
 						String[] ingredientQuantityConverted = new String[2];
 						if (ingredientRequired == true) {
 							try {
@@ -108,9 +109,9 @@ public class App {
 							ingredientQuantity = Float.parseFloat(ingredientQuantityConverted[0]); // TODO Это костыль
 							ingredientMeasure = ingredientQuantityConverted[1];
 						}
-						
+
 						float ingredientQuantityPerServing = ingredientQuantity / recipeServings;
-						
+
 						if (ingredientRequired == true) {
 							System.out.println(ingredientName + " — " + ingredientQuantityPerServing + " " + ingredientMeasure);
 						} else {
@@ -138,7 +139,7 @@ public class App {
 			final String CSSSELECTOR_PRODUCT_PRICE = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:first-of-type"; // TODO ВНИМАНИЕ: захватывает только самую дешёвую цену (которая по скидке). В будущем захватывать обе цены для предоставления выбора пользователю. Формат: «169,99 ₽»
 			final String CSSSELECTOR_CATEGORY_NAME = "a > div";
 			final String CATEGORIES_EXCLUSIONS = "https://yarcheplus.ru/catalog/newest-732 https://yarcheplus.ru/catalog/bestseller-731 https://yarcheplus.ru/catalog/detskoe-pitanie-i-gigiena-224 https://yarcheplus.ru/catalog/igrushki-216 https://yarcheplus.ru/catalog/dlya-doma-223 https://yarcheplus.ru/catalog/krasota-i-zdorovye-220 https://yarcheplus.ru/catalog/zootovary-219 https://yarcheplus.ru/catalog/kolgotki-i-noski-173 https://yarcheplus.ru/catalog/podarochnye-pakety-830 https://yarcheplus.ru/catalog/melochi-u-kassy-762"; // TODO В будущем сделать белый список категорий в виде диапазона
-			final String JSON_FILEPATH = "output.json";
+			final String OUTPUT_JSON_FILEPATH = "products.json";
 
 			Document doc = null;
 			String currWebpage = new String(WEBSITE);
@@ -171,12 +172,12 @@ public class App {
 
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonFactory jsonFactory = new JsonFactory(objectMapper);
-			File file = new File(JSON_FILEPATH);
+			File file = new File(OUTPUT_JSON_FILEPATH);
 
 			try (FileWriter fileWriter = new FileWriter(file); JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)) {
-				// Начинаем массив
 				jsonGenerator.writeStartArray();
-				System.out.println("Путь к JSON-файлу: «" + JSON_FILEPATH + "». Завершающее `]` появится только после окончания сбора данных с сайта.");
+				System.out.println("Путь к JSON-файлу: «" + OUTPUT_JSON_FILEPATH + "». Завершающее `]` появится только после окончания сбора данных с сайта.");
+				
 				for (Category category : categoriesList) {
 					currWebpage = category.link;
 					do {
@@ -287,9 +288,8 @@ public class App {
 					} while (nextPageLink != null);
 					// TODO В будущем реализовать пагинацию с помощью нажатия кнопки (`<button>`)
 				}
-				// Завершаем массив
+				
 				jsonGenerator.writeEndArray();
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -347,7 +347,7 @@ public class App {
 
 		return null;
 	}
-	
+
 	/**
 	 * <p>Конвертация в стандартные меры системы СИ
 	 * Если 2-ым аргументом подаётся «шт.» и др. мера, то она остаётся неизменным
