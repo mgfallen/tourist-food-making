@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Data
-@Table(name = "portion")
+@Table(name = "portions")
 public class Portion {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

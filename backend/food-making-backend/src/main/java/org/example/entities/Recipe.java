@@ -14,9 +14,8 @@ import org.example.support.ProductsList;
 
 @Entity
 @Data
-@Table(name = "recipe")
-//@TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
-//@Convert(attributeName = "products", converter = StringJsonUserType.class)
+@Table(name = "recipes")
+
 public class Recipe {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
