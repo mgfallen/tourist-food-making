@@ -81,7 +81,7 @@ public class App {
 					jsonGenerator.writeStartArray();
 
 					Elements recipes = doc.select(CSSSELECTOR_WEBSITE_RECIPES);
-					List<Element> recipesList = recipes.subList(0, Math.min(recipes.size(), Integer.valueOf(recipesQuantity)));
+					List<Element> recipesList = recipes.subList(0, Math.min(recipes.size(), Short.valueOf(recipesQuantity)));
 					
 					for (Element recipe : recipesList) {
 						String recipeName = recipe.select(CSSSELECTOR_WEBSITE_RECIPENAME).first().text();
@@ -99,7 +99,7 @@ public class App {
 								System.exit(1);
 							}
 
-							int recipeServings = Integer.parseInt(recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS).first().attr(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR));
+							int recipeServings = Short.parseShort(recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS).first().attr(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR));
 
 							System.out.println(recipeName);
 							System.out.println("Ингредиенты на 1 порцию:");
@@ -167,6 +167,8 @@ public class App {
 					System.out.println();
 				}
 			}
+			
+			System.out.println("Парсинг завершён!");
 		} else {
 			final String WEBSITE_DOMAIN = "https://yarcheplus.ru";
 			final String WEBSITE = WEBSITE_DOMAIN + "/catalog/ovoschi-i-frukty-187"; // TODO Получать каждую веб-страницу из https://yarcheplus.ru/
