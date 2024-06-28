@@ -35,9 +35,11 @@ public class App {
 		// TODO Позаботиться про безопасность кода: сменить public на private где нужно, поставить static где нужно, сделать геттеры и сеттеры и т.д.
 		// Файл слишком большой, вынести подкоманды в отдельные классы
 		if (args.length != 0 && args[0].equals("recipes")) {
-			final String WEBSITE_URL_BREAKFAST = "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[188]=188";
-			final String WEBSITE_URL_LUNCH = "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[12]=12"; // TODO Отсюда берутся походные супы
-			final String WEBSITE_URL_DINNER = "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[819]=819";
+			final String[][] URLS = {
+					{"Завтрак", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[188]=188"},
+					{"Обед", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[12]=12"},
+					{"Ужин", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[819]=819"}
+			}; // TODO Из ссылки обедов берутся походные супы
 			final String WEBSITE_DOMAIN = "https://1000.menu";
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
 			final String CSSSELECTOR_WEBSITE_RECIPES = ".cooking-block > .cn-item:not(.ads_enabled)";
@@ -54,9 +56,11 @@ public class App {
 			System.out.println("Парсинг рецептов...");
 			System.out.println();
 
-			String[] urls = {WEBSITE_URL_BREAKFAST, WEBSITE_URL_LUNCH, WEBSITE_URL_DINNER};
-
-			for (String url : urls) {
+			
+			for (int i = 0; i < URLS.length; i++) {
+			    String recipesMealtime = URLS[i][0];
+			    String url = URLS[i][1];
+			    
 				Document doc = null;
 				try {
 					doc = Jsoup.connect(url).userAgent(WEBSITE_USERAGENT).get();
@@ -66,6 +70,9 @@ public class App {
 					System.exit(1);
 				}
 
+				System.out.println("Рецепты на " + recipesMealtime + "...");
+				System.out.println();
+				
 				ObjectMapper objectMapper = new ObjectMapper();
 				JsonFactory jsonFactory = new JsonFactory(objectMapper);
 				File file = new File(OUTPUT_JSON_FILEPATH);
@@ -77,8 +84,6 @@ public class App {
 					for (Element recipe : recipes) {
 						String recipeName = recipe.select(CSSSELECTOR_WEBSITE_RECIPENAME).first().text();
 						String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).first().attr("href");
-
-						System.out.println(recipeName);
 
 						if (recipeLink != null) {
 							recipeLink = WEBSITE_DOMAIN + recipeLink;
@@ -93,8 +98,10 @@ public class App {
 							}
 
 							int recipeServings = Integer.parseInt(recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS).first().attr(CSSSELECTOR_RECIPE_INGREDIENT_SERVINGS_ATTR));
-							System.out.println("Ингредиенты на 1 порцию:");
 
+							System.out.println(recipeName);
+							System.out.println("Ингредиенты на 1 порцию:");
+							
 							Elements ingredients = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENTS);
 							for (Element ingredient : ingredients) {
 								boolean ingredientRequired = true;
@@ -130,6 +137,8 @@ public class App {
 								jsonGenerator.writeStartObject();
 								if (ingredientRequired == true) {
 									System.out.println(ingredientName + " — " + ingredientQuantityString + " " + ingredientMeasure);
+									jsonGenerator.writeStringField("recipe_mealtime", recipesMealtime);
+									jsonGenerator.writeStringField("recipe_name", recipeName);
 									jsonGenerator.writeStringField("ingredient_name", ingredientName);
 									jsonGenerator.writeStringField("ingredient_quantity", ingredientQuantityString);
 									jsonGenerator.writeStringField("ingredient_quantity", ingredientMeasure);
