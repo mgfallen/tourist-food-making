@@ -3,7 +3,7 @@ import App from './App'
 import { StartPage } from '../pages/StartPage/Start'
 import { FilterPage } from '@/pages/FilterPage/Filter'
 import { MenuPage } from '@/pages/MenuPage/MenuPage'
-import { RecipePage } from '@/pages/ResipePage/ResipePage'
+import { RecipePage } from '@/pages/RecipePage/RecipePage'
 
 export const Router = () => {
   return (

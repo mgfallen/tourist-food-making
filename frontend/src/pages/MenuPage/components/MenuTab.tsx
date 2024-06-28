@@ -1,81 +1,16 @@
 import { Container } from '@/components/Container'
-import { Section } from '@/components/Section'
-import { Button } from '@/components/ui/button'
-import { useNavigate } from 'react-router-dom'
+import { DayMeals } from './DayMeals'
 
 export const MenuTab = () => {
-  const navigate = useNavigate()
   return (
     <Container>
-      <Section title="Day 1">
-        <Button
-          size="large"
-          variant="customGradient"
-          onClick={() => navigate('/recipe')}
-        >
-          Breakfast
-        </Button>
-        <Button
-          size="large"
-          variant="customGradient"
-          onClick={() => navigate('/recipe')}
-        >
-          Lunch
-        </Button>
-        <Button
-          size="large"
-          variant="customGradient"
-          onClick={() => navigate('/recipe')}
-        >
-          Dinner
-        </Button>
-      </Section>
-      <Section title="Day 2">
-        <Button
-          size="large"
-          variant="customGradient"
-          onClick={() => navigate('/recipe')}
-        >
-          Breakfast
-        </Button>
-        <Button
-          size="large"
-          variant="customGradient"
-          onClick={() => navigate('/recipe')}
-        >
-          Lunch
-        </Button>
-        <Button
-          size="large"
-          variant="customGradient"
-          onClick={() => navigate('/recipe')}
-        >
-          Dinner
-        </Button>
-      </Section>
-      <Section title="Day 3">
-        <Button
-          size="large"
-          variant="customGradient"
-          onClick={() => navigate('/recipe')}
-        >
-          Breakfast
-        </Button>
-        <Button
-          size="large"
-          variant="customGradient"
-          onClick={() => navigate('/recipe')}
-        >
-          Lunch
-        </Button>
-        <Button
-          size="large"
-          variant="customGradient"
-          onClick={() => navigate('/recipe')}
-        >
-          Dinner
-        </Button>
-      </Section>
+      <DayMeals dayNumber="1" />
+      <DayMeals dayNumber="2" />
+      <DayMeals dayNumber="3" />
+      <DayMeals dayNumber="4" />
+      <DayMeals dayNumber="5" />
+      <DayMeals dayNumber="6" />
+      <DayMeals dayNumber="7" />
     </Container>
   )
 }
