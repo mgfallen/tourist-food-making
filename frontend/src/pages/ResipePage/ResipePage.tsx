@@ -16,7 +16,7 @@ export const RecipePage = () => {
   return (
     <Background opacity={true}>
       <div className="flex flex-col w-full items-center">
-        <Title text="Day 1. Breakfast" />
+        <Title text="Day 1. Breakfast" onClick={() => navigate('/menu')} />
         <Tabs defaultValue="recipe" className="w-full flex flex-col">
           <TabsList>
             <TabsTrigger value="recipe">Recipe</TabsTrigger>

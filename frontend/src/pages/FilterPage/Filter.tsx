@@ -8,12 +8,13 @@ import { Button } from '@/components/ui/button'
 import { useNavigate } from 'react-router-dom'
 import { DropDown } from './components/DropDown'
 import { NumberInput } from './components/NumberInput'
+import { Cross } from 'lucide-react'
 export const FilterPage = () => {
   const navigate = useNavigate()
   return (
     <Background opacity={true}>
       <Container>
-        <Title text="Filters" />
+        <Title text="Filters" onClick={() => navigate('/')} />
         <div className="my-[20px] w-full">
           <DropDown
             title={'Excluded foods'}
