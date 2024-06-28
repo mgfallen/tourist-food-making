@@ -36,9 +36,9 @@ public class App {
 		// Файл слишком большой, вынести подкоманды в отдельные классы
 		if (args.length != 0 && args[0].equals("recipes")) {
 			final String[][] URLS = {
-					{"Завтрак", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[188]=188"},
-					{"Обед", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[12]=12"},
-					{"Ужин", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[819]=819"}
+				{"Завтрак", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[188]=188"}, // TODO 15 не должно быть строкой => вынести константы в отдельный файл конфигурации
+				{"Обед", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[12]=12"},
+				{"Ужин", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[819]=819"}
 			}; // TODO Из ссылки обедов берутся походные супы
 			final String WEBSITE_DOMAIN = "https://1000.menu";
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
@@ -55,11 +55,11 @@ public class App {
 
 			System.out.println("Парсинг рецептов...");
 			System.out.println();
-
 			
-			for (int i = 0; i < URLS.length; i++) {
+			for (byte i = 0; i < URLS.length; i++) {
 			    String recipesMealtime = URLS[i][0];
-			    String url = URLS[i][1];
+			    String recipesQuantity = URLS[i][1];
+			    String url = URLS[i][2];
 			    
 				Document doc = null;
 				try {
@@ -81,7 +81,9 @@ public class App {
 					jsonGenerator.writeStartArray();
 
 					Elements recipes = doc.select(CSSSELECTOR_WEBSITE_RECIPES);
-					for (Element recipe : recipes) {
+					List<Element> recipesList = recipes.subList(0, Math.min(recipes.size(), Integer.valueOf(recipesQuantity)));
+					
+					for (Element recipe : recipesList) {
 						String recipeName = recipe.select(CSSSELECTOR_WEBSITE_RECIPENAME).first().text();
 						String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).first().attr("href");
 
@@ -150,14 +152,19 @@ public class App {
 								jsonGenerator.flush();
 							}
 						}
-						System.out.println();
-						System.out.println();
-						System.out.println();
+						if (i+1 < URLS.length) {
+							System.out.println();
+						}
 					}
 
 					jsonGenerator.writeEndArray();
 				} catch (IOException e) {
 					e.printStackTrace();
+				}
+
+				if (i+1 < URLS.length) {
+					System.out.println();
+					System.out.println();
 				}
 			}
 		} else {
