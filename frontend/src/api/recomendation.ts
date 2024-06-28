@@ -10,7 +10,7 @@ export const useRecomendation = () => {
   return useMutation({
     mutationFn: (data: RecomendationCreation) =>
       baseApiRequest<RecomendationCreationReply>({
-        url: '/choice',
+        url: '/api/v1/recommendation',
         method: 'POST',
         data,
       }),
