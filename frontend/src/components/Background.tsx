@@ -1,5 +1,5 @@
 import backgroundImage from '@/assets/background.jpg'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 export const Background = ({
   opacity,
   children,

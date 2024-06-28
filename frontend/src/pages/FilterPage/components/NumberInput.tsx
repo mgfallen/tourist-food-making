@@ -1,5 +1,5 @@
 import { Input, InputProps } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
+import { cn } from '@/utils'
 import React from 'react'
 
 type NumberInputProps = Omit<InputProps, 'type'> & {
