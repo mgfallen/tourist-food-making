@@ -2,6 +2,8 @@ package org.example.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.DTO.RecipeDTO;
+import org.example.DTO.RecommendationDTO;
 import org.example.support.ProductsList;
 import org.example.support.RecipeList;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -31,7 +33,11 @@ public class Order {
     private Set<User> users = new HashSet<>();
 
     @JdbcTypeCode(SqlTypes.JSON)
-    private List<RecipeList> recipes;
+    private List<RecommendationDTO> recipes;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    private List<ProductsList> products;
+
 
     @PrePersist
     protected void onCreate() {
