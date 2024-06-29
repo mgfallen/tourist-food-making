@@ -12,10 +12,12 @@ export const DropDown = ({
   title,
   items,
   multiSelect,
+  onSelect,
 }: {
   title: string
   items: string[]
   multiSelect: boolean
+  onSelect?: (item: string) => void
 }) => {
   const [selectedItems, setSelectedItems] = useState<boolean[]>(
     items.map(() => false),
@@ -26,6 +28,9 @@ export const DropDown = ({
         ? prevState.map((selected, i) => (i === index ? !selected : selected))
         : prevState.map((selected, i) => (i === index ? !selected : false)),
     )
+    if (onSelect) {
+      onSelect(items[index])
+    }
   }
   return (
     <DropdownMenu>

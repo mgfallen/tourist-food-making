@@ -4,9 +4,11 @@ import {
   RecomendationCreation,
   RecomendationCreationReply,
 } from '@/types/recomendation'
+import { useNavigate } from 'react-router-dom'
 
 export const useRecomendation = () => {
   const client = useQueryClient()
+  const navigate = useNavigate()
   return useMutation({
     mutationFn: (data: RecomendationCreation) =>
       baseApiRequest<RecomendationCreationReply>({
@@ -17,6 +19,7 @@ export const useRecomendation = () => {
     onSuccess: (data: RecomendationCreationReply) => {
       client.invalidateQueries({ queryKey: ['recomendation'] })
       console.log(data.order_id)
+      navigate('/menu', { state: data })
     },
     onError: (err: Error) => {
       console.log(err)
