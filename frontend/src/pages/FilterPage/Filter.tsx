@@ -18,11 +18,11 @@ export const FilterPage = () => {
   const [numDays, setNumDays] = useState<string>('1')
   const handleSendAnswer = () => {
     return recomendationRequest({
-      days: parseInt(numDays),
-      people: parseInt(numPeople),
-      food_filters: [1],
+      num_days: parseInt(numDays),
+      num_people: parseInt(numPeople),
+      excluded_food: [1],
       budget: budget,
-      utensils: '',
+      available_cookware: 'кастрюля',
     })
   }
   return (

@@ -6,8 +6,8 @@ enum MealTime {
 export type RecipeReply = {
   recipe_id: number
   name: string
-  discription: string
-  ingredients: [{ product_id: string; quantity: number }]
+  description: string
+  ingredients: [{ product_id: number; quantity: number }]
   price: number
   mealTime: MealTime
 }

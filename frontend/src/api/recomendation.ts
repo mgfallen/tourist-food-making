@@ -18,7 +18,7 @@ export const useRecomendation = () => {
       }),
     onSuccess: (data: RecomendationCreationReply) => {
       client.invalidateQueries({ queryKey: ['recomendation'] })
-      console.log(data.order_id)
+      console.log(data.orderID)
       navigate('/menu', { state: data })
     },
     onError: (err: Error) => {

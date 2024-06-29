@@ -8,27 +8,32 @@ enum Dishes {
   'сковорода',
 }
 export type RecomendationCreation = {
-  days: number
-  people: number
-  food_filters: number[]
+  num_days: number
+  num_people: number
+  excluded_food: number[]
   budget: string
-  utensils: string
+  available_cookware: string
 }
 
 export type RecomendationCreationReply = {
-  order_id: number
-  recomendations: {
-    breakfast: {
-      recipe_id: number
-      name: string
-    }
-    lunch: {
-      recipe_id: number
-      name: string
-    }
-    dinner: {
-      recipe_id: number
-      name: string
-    }
-  }
+  orderID: number
+  recommendations: [
+    {
+      day: 1
+      recipes: {
+        breakfast: {
+          recipeId: number
+          name: string
+        }
+        lunch: {
+          recipeId: number
+          name: string
+        }
+        dinner: {
+          recipeId: number
+          name: string
+        }
+      }
+    },
+  ]
 }
