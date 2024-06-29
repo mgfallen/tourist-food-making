@@ -87,9 +87,9 @@ public class App {
 				File file = new File(OUTPUT_JSON_FILEPATH);
 
 				try (
-					FileWriter fileWriter = new FileWriter(file);
-					JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)
-				) {
+						FileWriter fileWriter = new FileWriter(file);
+						JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)
+						) {
 					jsonGenerator.useDefaultPrettyPrinter();
 					jsonGenerator.writeStartArray();
 
@@ -150,20 +150,33 @@ public class App {
 								BigDecimal ingredientQuantityPerServingBD = roundIngredientQuantity(ingredientQuantityPerServing);
 								String ingredientQuantityString = ingredientQuantityPerServingBD.toPlainString(); // TODO Костыль
 
-								jsonGenerator.writeStartObject();
-								if (ingredientRequired == true) {
-									System.out.println("* " + ingredientName + " — " + ingredientQuantityString + " " + ingredientMeasure);
+								// Если это первый ингредиент, начинаем новый рецепт
+								if (ingredient == ingredients.get(0)) {
+									jsonGenerator.writeStartObject();
 									jsonGenerator.writeStringField("mealtime", recipesMealtime);
 									jsonGenerator.writeStringField("name", recipeName);
-									jsonGenerator.writeStringField("ingredient_name", ingredientName);
+									jsonGenerator.writeFieldName("ingredients");
+									jsonGenerator.writeStartArray();
+								}
+
+								// Пишем ингредиент
+								jsonGenerator.writeStartObject();
+								jsonGenerator.writeStringField("ingredient_name", ingredientName);
+								if (ingredientRequired == true) {
+									System.out.println("* " + ingredientName + " — " + ingredientQuantityString + " " + ingredientMeasure);
 									jsonGenerator.writeStringField("ingredient_quantity", ingredientQuantityString);
-									jsonGenerator.writeStringField("ingredient_quantity", ingredientMeasure);
+									jsonGenerator.writeStringField("ingredient_measure", ingredientMeasure);
 								} else {
 									System.out.println("* " + ingredientName);
-									jsonGenerator.writeStringField("ingredient_name", ingredientName);
 								}
 								jsonGenerator.writeEndObject();
-								jsonGenerator.flush();
+
+								// Если это последний ингредиент, закрываем массив и объект рецепта
+								if (ingredient == ingredients.get(ingredients.size() - 1)) {
+									jsonGenerator.writeEndArray();
+									jsonGenerator.writeEndObject();
+									jsonGenerator.flush();
+								}
 							}
 						}
 						if (i < URLS.length) {
@@ -237,9 +250,9 @@ public class App {
 			File file = new File(OUTPUT_JSON_FILEPATH);
 
 			try (
-				FileWriter fileWriter = new FileWriter(file);
-				JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)
-			) {
+					FileWriter fileWriter = new FileWriter(file);
+					JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)
+					) {
 				jsonGenerator.useDefaultPrettyPrinter();
 				jsonGenerator.writeStartArray();
 				System.out.println("Путь к JSON-файлу: «" + OUTPUT_JSON_FILEPATH + "». Завершающее `]` появится только после окончания сбора данных с сайта.");
