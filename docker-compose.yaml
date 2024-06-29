@@ -40,12 +40,12 @@ services:
     depends_on:
       - db
     environment:
-      DB_USERNAME: ${DB_USERNAME:?dbUserNameNorProvided}
-      DB_PASSWORD: ${DB_PASSWORD:?dbPasswordNotProvided}
-      DB_NAME: ${DB_NAME:?dbNameNotProvided}
-      DB_HOST: example-db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgresg
+      DB_HOST: db
       DB_PORT: 5432
-      APP_PORT: ${APP_PORT:?appPortNotProvided}
+      APP_PORT: 8081
     restart: unless-stopped
     ports:
       - "8081:8081"
