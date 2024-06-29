@@ -2,6 +2,7 @@ package org.example.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.DTO.DayRecommendationDTO;
 import org.example.DTO.RecipeDTO;
 import org.example.DTO.RecommendationDTO;
 import org.example.support.ProductsList;
@@ -33,7 +34,7 @@ public class Order {
     private Set<User> users = new HashSet<>();
 
     @JdbcTypeCode(SqlTypes.JSON)
-    private List<RecommendationDTO> recipes;
+    private List<DayRecommendationDTO> recipes;
 
     @JdbcTypeCode(SqlTypes.JSON)
     private List<ProductsList> products;

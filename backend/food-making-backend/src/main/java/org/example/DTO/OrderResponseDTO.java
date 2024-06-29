@@ -9,5 +9,5 @@ import java.util.List;
 @Setter
 public class OrderResponseDTO {
     private Long orderID;
-    private List<RecommendationDTO> recommendations;
+    private List<DayRecommendationDTO> recommendations;
 }
