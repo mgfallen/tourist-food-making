@@ -22,29 +22,32 @@ services:
       - openapi
 
   db:
-    image: postgres:16.3
+    image: 'postgres:16.3-alpine'
     container_name: postgres
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "postgres"
     volumes:
       - /home/database-mount/pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    expose:
+      - "5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   java-app:
     container_name: java-app
     build:
       context: ./backend/food-making-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
     depends_on:
       - db
-    environment:
-      DB_HOST: db
-      DB_PORT: 5432
-      DB_NAME: postgres
-      DB_USER: postgres
-      DB_PASSWORD: postgres
     ports:
       - "8081:8081"
 
@@ -77,3 +80,4 @@ volumes:
       device: /home/database-mount/pgdata
   swagger-ui:
     external: false
+
