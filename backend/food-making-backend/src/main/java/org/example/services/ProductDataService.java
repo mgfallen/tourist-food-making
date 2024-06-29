@@ -1,7 +1,6 @@
 package org.example.services;
 
 import jakarta.transaction.Transactional;
-import org.example.exeptions.ResourceNotFoundException;
 import org.example.entities.Product;
 import org.example.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
