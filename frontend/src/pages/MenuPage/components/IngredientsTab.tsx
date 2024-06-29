@@ -13,7 +13,7 @@ export const IngredientsTab = () => {
         // onClick={() => navigate('/recipe')}
       >
         <div className="w-full flex flex-row  justify-between">
-          <div>Item 1</div> <div>price</div>
+          <div>Продукт 1</div> <div>price</div>
         </div>
       </Button>
       <Button
@@ -22,7 +22,7 @@ export const IngredientsTab = () => {
         // onClick={() => navigate('/recipe')}
       >
         <div className="w-full flex flex-row justify-between">
-          <div>Item 2</div> <div>price</div>
+          <div>Продукт 2</div> <div>price</div>
         </div>
       </Button>
       <Button
@@ -31,13 +31,13 @@ export const IngredientsTab = () => {
         // onClick={() => navigate('/recipe')}
       >
         <div className="w-full flex flex-row justify-between">
-          <div>Item 3</div> <div>price</div>
+          <div>Продукт 3</div> <div>цена</div>
         </div>
       </Button>
       <Separator />
       <Button size="large" variant="customGradient">
         <div className="w-full flex flex-row justify-between">
-          <div>Total</div> <div>price</div>
+          <div>Итого</div> <div>цена</div>
         </div>
       </Button>
     </Container>

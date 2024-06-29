@@ -15,8 +15,8 @@ export const RecipePage = () => {
         <Title text={dayMeal} onClick={() => navigate('/menu')} />
         <Tabs defaultValue="recipe" className="w-full flex flex-col">
           <TabsList>
-            <TabsTrigger value="recipe">Recipe</TabsTrigger>
-            <TabsTrigger value="pfc">PFC</TabsTrigger>
+            <TabsTrigger value="recipe">Рецепт</TabsTrigger>
+            <TabsTrigger value="pfc">БЖУ</TabsTrigger>
           </TabsList>
           <TabsContent value="recipe">
             <RecipeTab />

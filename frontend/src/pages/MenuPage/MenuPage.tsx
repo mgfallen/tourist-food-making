@@ -17,8 +17,8 @@ export const MenuPage = () => {
         <Title text="Menu" onClick={() => navigate('/filter')} />
         <Tabs defaultValue="menu" className="w-full flex flex-col">
           <TabsList>
-            <TabsTrigger value="menu">Menu</TabsTrigger>
-            <TabsTrigger value="ingredients">Ingredients</TabsTrigger>
+            <TabsTrigger value="menu">Меню</TabsTrigger>
+            <TabsTrigger value="ingredients">Продукты</TabsTrigger>
           </TabsList>
           <TabsContent value="menu">
             <MenuTab />

@@ -10,7 +10,7 @@ export const DayMeals = ({ dayNumber }: { dayNumber: string }) => {
         size="large"
         variant="customGradient"
         onClick={() =>
-          navigate('/recipe', { state: `Day ${dayNumber}. Breakfast` })
+          navigate('/recipe', { state: `День ${dayNumber}. Завтрак` })
         }
       >
         Breakfast
@@ -19,7 +19,7 @@ export const DayMeals = ({ dayNumber }: { dayNumber: string }) => {
         size="large"
         variant="customGradient"
         onClick={() =>
-          navigate('/recipe', { state: `Day ${dayNumber}. Lunch` })
+          navigate('/recipe', { state: `День ${dayNumber}. Обед` })
         }
       >
         Lunch
@@ -28,7 +28,7 @@ export const DayMeals = ({ dayNumber }: { dayNumber: string }) => {
         size="large"
         variant="customGradient"
         onClick={() =>
-          navigate('/recipe', { state: `Day ${dayNumber}. Dinner` })
+          navigate('/recipe', { state: `День ${dayNumber}. Ужин` })
         }
       >
         Dinner

@@ -10,8 +10,8 @@ export const DiagramTab = () => {
   const navigate = useNavigate()
   return (
     <Container>
-      <Section title="Ratio of proteins, fats and carbohydrates">
-        "PFC Diagram"
+      <Section title="Соотношение белков, жиров и углеводов">
+        "БЖУ Диаграмма"
       </Section>
     </Container>
   )

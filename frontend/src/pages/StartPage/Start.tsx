@@ -10,7 +10,7 @@ export const StartPage = () => {
   return (
     <Background opacity={false}>
       <div className="flex items-center flex-col py-[60px] px-[48px] min-h-screen justify-between">
-        <div className="text-5xl font-bold text-white">TourFood</div>
+        <div className="text-5xl font-bold text-white">ТурФуд</div>
         {!windowWidth && (
           <div className="relative w-[300px] h-[300px] max-w-md overflow-hidden bg-transparent rounded-lg">
             <Lottie animationData={pic} loop={true} />
@@ -21,7 +21,7 @@ export const StartPage = () => {
           size="custom"
           onClick={() => navigate('/filter')}
         >
-          Start
+          Начать
         </Button>
       </div>
     </Background>

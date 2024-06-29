@@ -31,22 +31,22 @@ export const FilterPage = () => {
         <Title text="Filters" onClick={() => navigate('/')} />
         <div className="my-[20px] w-full">
           <DropDown
-            title={'Excluded foods'}
-            items={['eggs', 'milk', 'sugar', 'gluten']}
+            title={'Исключаемые продукты'}
+            items={['яйца', 'молоко', 'сахар', 'глютен']}
             multiSelect={true}
           />
           <DropDown
-            title={'Available dishes'}
-            items={['pot', 'microwave', 'pan']}
+            title={'Доступная посуда'}
+            items={['кастрюля', 'сковородка']}
             multiSelect={true}
           />
           <DropDown
-            title={'Budget'}
-            items={['small', 'medium', 'large']}
+            title={'Бюджет'}
+            items={['маленький', 'средний', 'большой']}
             multiSelect={false}
             onSelect={(item) => setBudget(item)}
           />
-          <Tile text="Number of people">
+          <Tile text="Количество людей">
             <NumberInput
               min={1}
               max={100}
@@ -56,7 +56,7 @@ export const FilterPage = () => {
               onChange={(e) => setNumPeople(e.target.value)}
             />
           </Tile>
-          <Tile text="Number of days">
+          <Tile text="Количество дней">
             <NumberInput
               min={1}
               max={100}
@@ -72,7 +72,7 @@ export const FilterPage = () => {
           variant="custom"
           onClick={() => handleSendAnswer()}
         >
-          Search
+          Поиск
         </Button>
       </Container>
     </Background>

@@ -10,15 +10,15 @@ export const RecipeTab = () => {
   const navigate = useNavigate()
   return (
     <Container>
-      <Section title="Ingredients">
-        <Tile text="Ingredient" />
-        <Tile text="Ingredient" />
-        <Tile text="Ingredient" />
+      <Section title="Продукты">
+        <Tile text="Продукт" />
+        <Tile text="Продукт" />
+        <Tile text="Продукт" />
       </Section>
       <Section title="Dishes">
-        <Tile text="Dish" />
+        <Tile text="Посуда" />
       </Section>
-      <Section title="Recipe">
+      <Section title="Рецепт">
         <Tile text="А здесь будет целый абзац текста про то, как варить овсянку" />
       </Section>
     </Container>
