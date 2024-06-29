@@ -28,12 +28,17 @@ services:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "postgres"
-      POSTGRES_HOST: "db:5432"
     volumes:
       - /home/database-mount/pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-
+    expose:
+      - "5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   java-app:
     container_name: java-app
@@ -41,8 +46,6 @@ services:
       context: ./backend/food-making-backend
     depends_on:
       - db
-    environment:
-      POSTGRES_HOST: "db:5432"
     ports:
       - "8081:8081"
 
