@@ -136,8 +136,22 @@ public class RecommendationController {
         allSchedule.addAll(dinnershedule);
 
         Map<Long, ProductsList> productMap = new HashMap<>();
-
+        List<ProductsList> allProducts = new ArrayList<>();
         for (Recipe recipe : allSchedule) {
+            for (ProductsList product : recipe.getProducts()) {
+                int ind = allProducts.indexOf(product);
+                if (ind > -1) {
+                    allProducts.get(ind).setAmount(allProducts.get(ind).getAmount() + product.getAmount());
+                } else {
+                    ProductsList productsList = new ProductsList();
+                    productsList.setProductId(product.getProductId());
+                    productsList.setAmount(product.getAmount());
+                    allProducts.add(productsList);
+                }
+            }
+        }
+
+        /*for (Recipe recipe : allSchedule) {
             for (ProductsList product : recipe.getProducts()) {
                 productMap.merge(product.getProductId(), product, (existingProduct, newProduct) -> {
                     existingProduct.setAmount(existingProduct.getAmount() + newProduct.getAmount());
@@ -146,11 +160,11 @@ public class RecommendationController {
             }
         }
 
-        List<ProductsList> allProducts =  productMap.values().stream().toList();
-        /*for (ProductsList productsList:
+        List<ProductsList> allProducts =  productMap.values().stream().toList();*/
+        for (ProductsList productsList:
              allProducts) {
             productsList.setAmount(productsList.getAmount()*days*persons);
-        }*/
+        }
         Order order = new Order();
         order.setProducts(allProducts);
         order.setRecipes(recs);
