@@ -39,20 +39,20 @@ public class RecommendationService {
         System.out.println(breakfastRecipes.size());
         switch (budget){
             case "маленький": {
-                breakfastRecipes.subList(0, (int) (breakfastRecipes.size() * 0.4));
-                lunchRecipes.subList(0, (int) (lunchRecipes.size() * 0.4));
-                dinnerRecipes.subList(0, (int) (dinnerRecipes.size() * 0.4));
+                breakfastRecipes = breakfastRecipes.subList(0, (int) (breakfastRecipes.size() * 0.4));
+                lunchRecipes = lunchRecipes.subList(0, (int) (lunchRecipes.size() * 0.4));
+                dinnerRecipes = dinnerRecipes.subList(0, (int) (dinnerRecipes.size() * 0.4));
                 break;}
             case "средний": {
-                breakfastRecipes.subList((int) (breakfastRecipes.size() * 0.4), (int) (breakfastRecipes.size() * 0.7));
-                lunchRecipes.subList((int) (lunchRecipes.size() * 0.4), (int) (lunchRecipes.size() * 0.7));
-                dinnerRecipes.subList((int) (dinnerRecipes.size() * 0.4), (int) (dinnerRecipes.size() * 0.7));
+                breakfastRecipes = breakfastRecipes.subList((int) (breakfastRecipes.size() * 0.4), (int) (breakfastRecipes.size() * 0.7));
+                lunchRecipes = lunchRecipes.subList((int) (lunchRecipes.size() * 0.4), (int) (lunchRecipes.size() * 0.7));
+                dinnerRecipes = dinnerRecipes.subList((int) (dinnerRecipes.size() * 0.4), (int) (dinnerRecipes.size() * 0.7));
                 break;
             }
             case "большой": {
-                breakfastRecipes.subList((int) (breakfastRecipes.size() * 0.8), breakfastRecipes.size());
-                lunchRecipes.subList((int) (lunchRecipes.size() * 0.8), lunchRecipes.size());
-                dinnerRecipes.subList((int) (dinnerRecipes.size() * 0.8), dinnerRecipes.size());
+                breakfastRecipes = breakfastRecipes.subList((int) (breakfastRecipes.size() * 0.8), breakfastRecipes.size());
+                lunchRecipes = lunchRecipes.subList((int) (lunchRecipes.size() * 0.8), lunchRecipes.size());
+                dinnerRecipes = dinnerRecipes.subList((int) (dinnerRecipes.size() * 0.8), dinnerRecipes.size());
                 break;
             }
         }
