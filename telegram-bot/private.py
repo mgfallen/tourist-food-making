@@ -1,1 +1,1 @@
-TOKEN="хуй"
+TOKEN="our_key_token"
