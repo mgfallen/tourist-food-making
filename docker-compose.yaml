@@ -45,7 +45,7 @@ services:
     build:
       context: ./backend/food-making-backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/testdb
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/postgres
     depends_on:
       - db
     ports:
