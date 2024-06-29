@@ -54,6 +54,13 @@ public class App {
 			final String OUTPUT_JSON_FILEPATH = "recipes.json";
 
 			System.out.println("Парсинг рецептов...");
+			System.out.println(
+				"[" +
+				URLS[0][0] + ": " + URLS[0][1] + "; " + 
+				URLS[1][0] + ": " + URLS[1][1] + "; " + 
+				URLS[2][0] + ": " + URLS[2][1] + 
+				"]"
+			);
 			System.out.println();
 			
 			for (byte i = 0; i < URLS.length; i++) {
@@ -152,7 +159,7 @@ public class App {
 								jsonGenerator.flush();
 							}
 						}
-						if (i+1 < URLS.length) {
+						if (i < URLS.length) {
 							System.out.println();
 						}
 					}
@@ -163,7 +170,7 @@ public class App {
 				}
 
 				if (i+1 < URLS.length) {
-					System.out.println();
+					System.out.println("================================================");
 					System.out.println();
 				}
 			}
