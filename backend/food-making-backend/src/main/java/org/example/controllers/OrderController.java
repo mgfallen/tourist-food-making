@@ -1,9 +1,7 @@
 package org.example.controllers;
 
 import org.example.entities.Order;
-import org.example.entities.Product;
 import org.example.services.OrderDataService;
-import org.example.services.ProductDataService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

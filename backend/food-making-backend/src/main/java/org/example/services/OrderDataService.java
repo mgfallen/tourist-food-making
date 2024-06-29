@@ -2,9 +2,7 @@ package org.example.services;
 
 import jakarta.transaction.Transactional;
 import org.example.entities.Order;
-import org.example.entities.Product;
 import org.example.repositories.OrderRepository;
-import org.example.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

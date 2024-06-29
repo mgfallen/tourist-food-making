@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
-        System.getProperty("spring.datasource.url")
+        System.getProperty("spring.datasource.url");
         SpringApplication.run(Application.class, args);
     }
 }

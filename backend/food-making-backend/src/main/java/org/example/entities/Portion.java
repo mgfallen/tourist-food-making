@@ -2,7 +2,7 @@ package org.example.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.example.support.ProductsList;
+import org.example.DTO.ProductsList;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 

@@ -1,16 +1,13 @@
 package org.example.entities;
 
-import jakarta.persistence.Convert;
-
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Type;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Set;
-import org.example.support.ProductsList;
+
+import org.example.DTO.ProductsList;
 
 @Entity
 @Data

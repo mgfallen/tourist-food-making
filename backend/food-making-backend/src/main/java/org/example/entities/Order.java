@@ -3,10 +3,7 @@ package org.example.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.example.DTO.DayRecommendationDTO;
-import org.example.DTO.RecipeDTO;
-import org.example.DTO.RecommendationDTO;
-import org.example.support.ProductsList;
-import org.example.support.RecipeList;
+import org.example.DTO.ProductsList;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
