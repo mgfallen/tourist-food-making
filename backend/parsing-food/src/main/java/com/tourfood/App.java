@@ -37,14 +37,15 @@ public class App {
 		// TODO Позаботиться про безопасность кода: сменить public на private где нужно, поставить static где нужно, сделать геттеры и сеттеры и т.д.
 		// Файл слишком большой, вынести подкоманды в отдельные классы
 		if (args.length != 0 && args[0].equals("recipes")) {
-			final String[][] URLS = {
-					{"Завтрак", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[188]=188"}, // TODO 15 не должно быть строкой => вынести константы в отдельный файл конфигурации
+			final String[][] WEBSITE_MEALTIMEURLS = {
+					{"Завтрак", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[188]=188"},
 					{"Обед", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[12]=12"},
 					{"Ужин", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[819]=819"}
 			};
 			final String WEBSITE_DOMAIN = "https://1000.menu";
-			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
+			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
 			final String OUTPUT_JSON_FILEPATH = "recipes.json";
+			// При изменении CSS-селекторов учитывать обфускацию DOM
 			final String CSSSELECTOR_WEBSITE_RECIPES = ".cooking-block > .cn-item:not(.ads_enabled)";
 			final String CSSSELECTOR_WEBSITE_RECIPENAME = "a.h5";
 			final String CSSSELECTOR_WEBSITE_RECIPELINK = "a.h5";
@@ -57,9 +58,9 @@ public class App {
 
 			System.out.println("Парсинг рецептов...");
 			System.out.println( "[" +
-					URLS[0][0] + ": " + URLS[0][1] + "; " + 
-					URLS[1][0] + ": " + URLS[1][1] + "; " + 
-					URLS[2][0] + ": " + URLS[2][1] + 
+					WEBSITE_MEALTIMEURLS[0][0] + ": " + WEBSITE_MEALTIMEURLS[0][1] + "; " + 
+					WEBSITE_MEALTIMEURLS[1][0] + ": " + WEBSITE_MEALTIMEURLS[1][1] + "; " + 
+					WEBSITE_MEALTIMEURLS[2][0] + ": " + WEBSITE_MEALTIMEURLS[2][1] + 
 					"]"	);
 			System.out.println();
 
@@ -70,10 +71,10 @@ public class App {
 			try ( FileWriter fileWriter = new FileWriter(file);
 					JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter))
 			{
-				for (byte i = 0; i < URLS.length; i++) {
-					String recipesMealtime = URLS[i][0];
-					String recipesQuantity = URLS[i][1];
-					String url = URLS[i][2];
+				for (byte i = 0; i < WEBSITE_MEALTIMEURLS.length; i++) {
+					String recipesMealtime = WEBSITE_MEALTIMEURLS[i][0];
+					String recipesQuantity = WEBSITE_MEALTIMEURLS[i][1];
+					String url = WEBSITE_MEALTIMEURLS[i][2];
 
 					Document doc = null;
 					try {
@@ -92,7 +93,6 @@ public class App {
 
 					Elements recipes = doc.select(CSSSELECTOR_WEBSITE_RECIPES);
 					List<Element> recipesList = recipes.subList(0, Math.min(recipes.size(), Short.valueOf(recipesQuantity)));
-
 					for (Element recipe : recipesList) {
 						String recipeName = recipe.select(CSSSELECTOR_WEBSITE_RECIPENAME).first().text();
 						String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).first().attr("href");
@@ -120,7 +120,7 @@ public class App {
 								float ingredientQuantity = 0f;
 								String ingredientMeasure = null;
 								String ingredientName = null;
-								
+
 								try {
 									ingredientName = ingredient.select(CSSSELECTOR_RECIPE_INGREDIENT_NAME).first().text();
 								} catch (NullPointerException e) {
@@ -179,14 +179,15 @@ public class App {
 								}
 							}
 						}
-						if (i < URLS.length) {
+
+						if (i < WEBSITE_MEALTIMEURLS.length) {
 							System.out.println();
 						}
 					}
 
 					jsonGenerator.writeEndArray();
 
-					if (i+1 < URLS.length) {
+					if (i+1 < WEBSITE_MEALTIMEURLS.length) {
 						System.out.println("================================================");
 						System.out.println();
 					}
@@ -198,33 +199,33 @@ public class App {
 			System.out.println("Парсинг рецептов завершён.");
 		} else {
 			final String WEBSITE_DOMAIN = "https://yarcheplus.ru";
-			final String WEBSITE = WEBSITE_DOMAIN + "/catalog/ovoschi-i-frukty-187"; // TODO Получать каждую веб-страницу из https://yarcheplus.ru/
-			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
+			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
 			final String OUTPUT_JSON_FILEPATH = "products.json";
+			// При изменении CSS-селекторов учитывать обфускацию DOM
 			final String CSSSELECTOR_WORKZONE_PRODUCTS = "#app-content > div > div:last-of-type > div:nth-of-type(2) > div:first-of-type > div:last-of-type > div:last-of-type > div:last-of-type";
 			final String CSSSELECTOR_WORKZONE_PRODUCTDIALOG = "main#app > div:not(#app-content) > div > div[role=\"dialog\"] div:has(> div > h1)";
 			final String CSSSELECTOR_CATEGORIES = "#app-content > div > div:last-of-type > div:first-of-type > div > a:has(> picture)";
 			final String CSSSELECTOR_PAGINATION = "> div:last-of-type > div:last-of-type > a:has(svg)";
 			final String CSSSELECTOR_PRODUCT = "> div:first-of-type > div > div";
 			final String CSSSELECTOR_PRODUCT_LINK = "> a";
-			final String CSSSELECTOR_PRODUCT_TITLE = "> div:nth-of-type(2) > div:nth-of-type(2) > div:first-of-type"; // Его содержимое типа: «Томаты Черри Делтари, 250&nbsp;г», «Чеснок молодой», «Чеснок 3 шт», «Лимоны поштучно, 0,1 - 0,3 кг», «Лайм 1 шт.», «Капуста белокочанная Свежий урожай поштучно, 1,2 - 4,5 кг», «Голубика», «Манго желтое, поштучно, 0,3 - 0,8 кг» (желтое и поштучно нужно будет убирать)
-			final String CSSSELECTOR_PRODUCT_QUANTITY = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)"; // Содержимое здесь — это граммовка. Формат: «250 г» или «1 кг» или «1 шт.»
-			final String CSSSELECTOR_PRODUCT_PRICE = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:first-of-type"; // TODO ВНИМАНИЕ: захватывает только самую дешёвую цену (которая по скидке). В будущем захватывать обе цены для предоставления выбора пользователю. Формат: «169,99 ₽»
+			final String CSSSELECTOR_PRODUCT_TITLE = "> div:nth-of-type(2) > div:nth-of-type(2) > div:first-of-type";
+			final String CSSSELECTOR_PRODUCT_QUANTITY = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(2)";
+			final String CSSSELECTOR_PRODUCT_PRICE = "> div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(1) > div:first-of-type";
 			final String CSSSELECTOR_CATEGORY_NAME = "a > div";
-			final String CATEGORIES_EXCLUSIONS = "https://yarcheplus.ru/catalog/newest-732 https://yarcheplus.ru/catalog/bestseller-731 https://yarcheplus.ru/catalog/detskoe-pitanie-i-gigiena-224 https://yarcheplus.ru/catalog/igrushki-216 https://yarcheplus.ru/catalog/dlya-doma-223 https://yarcheplus.ru/catalog/krasota-i-zdorovye-220 https://yarcheplus.ru/catalog/zootovary-219 https://yarcheplus.ru/catalog/kolgotki-i-noski-173 https://yarcheplus.ru/catalog/podarochnye-pakety-830 https://yarcheplus.ru/catalog/melochi-u-kassy-762"; // TODO В будущем сделать белый список категорий в виде диапазона
+			final String CATEGORIES_EXCLUSIONS = "https://yarcheplus.ru/catalog/newest-732 https://yarcheplus.ru/catalog/bestseller-731 https://yarcheplus.ru/catalog/detskoe-pitanie-i-gigiena-224 https://yarcheplus.ru/catalog/igrushki-216 https://yarcheplus.ru/catalog/dlya-doma-223 https://yarcheplus.ru/catalog/krasota-i-zdorovye-220 https://yarcheplus.ru/catalog/zootovary-219 https://yarcheplus.ru/catalog/kolgotki-i-noski-173 https://yarcheplus.ru/catalog/podarochnye-pakety-830 https://yarcheplus.ru/catalog/melochi-u-kassy-762";
+			final String DELIM = ", ";
 
 			System.out.println("Парсинг продуктов...");
 			System.out.println();
 
 			Document doc = null;
-			String currWebpage = new String(WEBSITE);
+			String currWebpage = new String(WEBSITE_DOMAIN);
 			String nextPageLink = null;
 
 			List<String> categoriesExclusionsList = new ArrayList<>();
 			String[] items = CATEGORIES_EXCLUSIONS.split(" ");
 			categoriesExclusionsList.addAll(Arrays.asList(items));
 
-			// TODO Убрать шаблонный код (для парсинга первых продуктов устанавливается ДВА последовательных подключения)
 			try {
 				doc = Jsoup.connect(currWebpage).userAgent(WEBSITE_USERAGENT).get();
 			} catch (IOException e) {
@@ -241,21 +242,20 @@ public class App {
 				categoriesList.add(new Category(categoryLink, categoryName));
 			}
 
-			// Исключение из одного списка другой
 			categoriesList.removeIf(category -> categoriesExclusionsList.contains(category.link));
-			// TODO В будущем оптимизировать (мб можно и без буферного списка)
 
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonFactory jsonFactory = new JsonFactory(objectMapper);
 			File file = new File(OUTPUT_JSON_FILEPATH);
 
-			try (
-					FileWriter fileWriter = new FileWriter(file);
-					JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)
-					) {
+			try (FileWriter fileWriter = new FileWriter(file);
+					JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter))
+			{
 				jsonGenerator.useDefaultPrettyPrinter();
 				jsonGenerator.writeStartArray();
 				System.out.println("Путь к JSON-файлу: «" + OUTPUT_JSON_FILEPATH + "». Завершающее `]` появится только после окончания сбора данных с сайта.");
+				System.out.println("================================================================================");
+				System.out.println("Имя категории" + DELIM + "название продукта" + DELIM + "величина и диапазон" + DELIM + "количество" + DELIM + "стоимость (в рублях)" + DELIM + "ссылка на продукт в магазине" + DELIM + "кол-во белков" + DELIM + "кол-во жиров" + DELIM + "колв-о углеводов" + DELIM + "кол-во килокалорий");
 
 				for (Category category : categoriesList) {
 					currWebpage = category.link;
@@ -274,7 +274,7 @@ public class App {
 							String title = everyProduct.select(CSSSELECTOR_PRODUCT_TITLE).first().text();
 							String quantity = everyProduct.select(CSSSELECTOR_PRODUCT_QUANTITY).first().text();
 							String price = everyProduct.select(CSSSELECTOR_PRODUCT_PRICE).first().text(); // TODO Цена парсится за килограмм, а не за штуку
-							String[] titleArray = extractMeasureRange(title); // Примерная граммовка одной единицы товара (допустим, вес арбуза)
+							String[] titleArray = extractMeasureRange(title);
 							String name = titleArray[0];
 							String measureRange = titleArray[1];
 
@@ -328,9 +328,7 @@ public class App {
 							if (price.endsWith("₽")) {
 								price = price.substring(0, price.length() - 1).trim();
 							}
-							if (price.endsWith(" ")) {
-								price = price.substring(0, price.length() - 1).trim();
-							}
+							price = price.trim();
 							price = price.replaceAll(",", ".");
 
 							Matcher matcher = Pattern.compile("^(.*?),\\\\s*([0-9]+).*$").matcher(title);
@@ -338,10 +336,7 @@ public class App {
 								title = matcher.group(1);
 							}
 
-							System.out.println(category.name + "; " + name + "; " + measureRange + "; " + quantity + "; " + price + "; " + link + "; " + proteins + "; " + fats + "; " + carbonates + "; " + kilocal);
-
 							jsonGenerator.writeStartObject();
-
 							jsonGenerator.writeStringField("category", category.name);
 							jsonGenerator.writeStringField("name", name);
 							jsonGenerator.writeStringField("measureRange", measureRange);
@@ -352,11 +347,10 @@ public class App {
 							jsonGenerator.writeStringField("fats", fats);
 							jsonGenerator.writeStringField("carbonates", carbonates);
 							jsonGenerator.writeStringField("kilocalories", kilocal);
-
 							jsonGenerator.writeEndObject();
 							jsonGenerator.flush();
 
-							// TODO Обработать то, что каждая из этих переменных может быть ПОЧЕМУ-ТО пустой
+							System.out.println(category.name + DELIM + name + DELIM + measureRange + DELIM + quantity + DELIM + price + DELIM + link + DELIM + proteins + DELIM + fats + DELIM + carbonates + DELIM + kilocal);
 						}
 						try {
 							nextPageLink = doc.select(CSSSELECTOR_WORKZONE_PRODUCTS).select(CSSSELECTOR_PAGINATION).first().attr("href");
@@ -365,20 +359,29 @@ public class App {
 						}
 						currWebpage = WEBSITE_DOMAIN + new String(nextPageLink);
 					} while (nextPageLink != null);
-					// TODO В будущем реализовать пагинацию с помощью нажатия кнопки (`<button>`)
 				}
 
 				jsonGenerator.writeEndArray();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
+			System.out.println();
 			System.out.println("Парсинг продуктов завершён.");
 		}
 	}
 
 	/**
-	 * <p>Из строки «Яблоки, Ред, Делишес, 0,2 - 0,5 кг» возвращает подстроку «0,2 - 0,5 кг»</p>
+	 * <p>Возвращает ориентировочную граммовку одной единицы товара (допустим, вес арбуза).
+	 * Из строки `Яблоки, Ред, Делишес, 0,2 - 0,5 кг` возвращает подстроку `0,2 - 0,5 кг`</p>
+	 * Реальные примеры входных данных:
+	 * `Голубика`
+	 * `Чеснок молодой`
+	 * `Чеснок 3 шт`
+	 * `Томаты Черри Делтари, 250 г`
+	 * `Лимоны поштучно, 0,1 - 0,3 кг`
+	 * `Капуста белокочанная Свежий урожай поштучно, 1,2 - 4,5 кг`
+	 * `Манго желтое, поштучно, 0,3 - 0,8 кг`
 	 * @param title
 	 * @return
 	 */
