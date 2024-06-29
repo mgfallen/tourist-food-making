@@ -32,6 +32,9 @@ services:
       - /home/database-mount/pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - hacaton-project_default
+
 
   java-app:
     container_name: java-app
@@ -43,7 +46,7 @@ services:
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       DB_NAME: postgres
-      DB_HOST: db
+      DB_HOST: 158.160.2.48
       DB_PORT: 5432
       APP_PORT: 8081
     ports:
@@ -69,6 +72,10 @@ services:
     env_file:
       - ./frontend/.env
 
+networks:
+  hacaton-project_default:
+    driver: bridge
+
 volumes:
   pgdata:
     driver: local
@@ -78,3 +85,4 @@ volumes:
       device: /home/database-mount/pgdata
   swagger-ui:
     external: false
+
