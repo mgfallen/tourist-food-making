@@ -22,7 +22,7 @@ public class RecommendationDataService {
     private OrderRepository orderRepository;
 
     @Transactional
-    public List<Recipe> getRecipesWithExclude(List<String> names) {return recipeRepository.getRecipesWithExcludedProducts(names);}
+    public List<Recipe> getRecipesWithExclude(List<Integer> names) {return recipeRepository.getRecipesWithExcludedProducts(names);}
 
 
 
