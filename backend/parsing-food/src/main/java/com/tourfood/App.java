@@ -86,7 +86,11 @@ public class App {
 				JsonFactory jsonFactory = new JsonFactory(objectMapper);
 				File file = new File(OUTPUT_JSON_FILEPATH);
 
-				try (FileWriter fileWriter = new FileWriter(file); JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)) {
+				try (
+					FileWriter fileWriter = new FileWriter(file);
+					JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)
+				) {
+					jsonGenerator.useDefaultPrettyPrinter();
 					jsonGenerator.writeStartArray();
 
 					Elements recipes = doc.select(CSSSELECTOR_WEBSITE_RECIPES);
@@ -232,7 +236,11 @@ public class App {
 			JsonFactory jsonFactory = new JsonFactory(objectMapper);
 			File file = new File(OUTPUT_JSON_FILEPATH);
 
-			try (FileWriter fileWriter = new FileWriter(file); JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)) {
+			try (
+				FileWriter fileWriter = new FileWriter(file);
+				JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)
+			) {
+				jsonGenerator.useDefaultPrettyPrinter();
 				jsonGenerator.writeStartArray();
 				System.out.println("Путь к JSON-файлу: «" + OUTPUT_JSON_FILEPATH + "». Завершающее `]` появится только после окончания сбора данных с сайта.");
 
