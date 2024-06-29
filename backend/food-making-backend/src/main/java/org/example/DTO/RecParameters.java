@@ -12,11 +12,13 @@ public class RecParameters {
     @JsonProperty("num_people")
     Integer numPeople;
     @JsonProperty("excluded_food")
-    List<String> excludedFood;
+    List<Integer> excludedFood;
     @JsonProperty("num_days")
     Integer numDays;
     @JsonProperty("budget")
     String budget;
+    @JsonProperty("available_cookware")
+    List<String> cookware;
 
 
 }

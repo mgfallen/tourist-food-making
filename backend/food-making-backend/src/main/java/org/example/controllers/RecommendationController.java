@@ -52,7 +52,7 @@ public class RecommendationController {
                 .toList());
         System.out.println(breakfastRecipes.size());
         switch (budget){
-            case "малый": {
+            case "маленький": {
                breakfastRecipes.subList(0, (int) (breakfastRecipes.size() * 0.4));
                lunchRecipes.subList(0, (int) (lunchRecipes.size() * 0.4));
                dinnerRecipes.subList(0, (int) (dinnerRecipes.size() * 0.4));

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     @Query(value = "WITH target_products AS (" +
-            "            SELECT product_id FROM products WHERE name IN (:excludedProducts)" +
+            "            SELECT product_id FROM products WHERE product_id IN (:excludedProducts)" +
             "            )" +
             "            SELECT r.*" +
             "            FROM recipes r" +
@@ -21,6 +21,5 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
             "                JOIN LATERAL jsonb_array_elements(r.products) AS j ON true" +
             "                WHERE (j.value->>'productId')::int = tp.product_id" +
             "            );", nativeQuery = true)
-
-    public List<Recipe> getRecipesWithExcludedProducts(@Param("excludedProducts") List<String> excluded_recipes);
+    List<Recipe> getRecipesWithExcludedProducts(@Param("excludedProducts") List<Integer> excluded_recipes);
 }
