@@ -19,5 +19,6 @@ ENV DB_HOST=158.160.2.48
 ENV DB_PORT=5432
 ENV APP_PORT=8081
 
+EXPOSE "8081"
 
 ENTRYPOINT ["java","-Dspring.datasource.password=${DB_PASSWORD}", "-Dspring.datasource.username=${DB_USERNAME}", "-Dspring.datasource.url=jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}", "-Dserver.port=${APP_PORT}", "-jar", "app.jar"]
