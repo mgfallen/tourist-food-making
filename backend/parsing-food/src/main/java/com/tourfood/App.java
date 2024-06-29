@@ -65,31 +65,31 @@ public class App {
 					);
 			System.out.println();
 
-			for (byte i = 0; i < URLS.length; i++) {
-				String recipesMealtime = URLS[i][0];
-				String recipesQuantity = URLS[i][1];
-				String url = URLS[i][2];
+			ObjectMapper objectMapper = new ObjectMapper();
+			JsonFactory jsonFactory = new JsonFactory(objectMapper);
+			File file = new File(OUTPUT_JSON_FILEPATH);
 
-				Document doc = null;
-				try {
-					doc = Jsoup.connect(url).userAgent(WEBSITE_USERAGENT).get();
-				} catch (IOException e) {
-					System.err.println("Не удалось связаться с веб-страницей «" + url + "».");
-					e.printStackTrace();
-					System.exit(1);
-				}
+			try (
+					FileWriter fileWriter = new FileWriter(file);
+					JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)
+					) {
+				for (byte i = 0; i < URLS.length; i++) {
+					String recipesMealtime = URLS[i][0];
+					String recipesQuantity = URLS[i][1];
+					String url = URLS[i][2];
 
-				System.out.println("Рецепты на " + recipesMealtime + "...");
-				System.out.println();
+					Document doc = null;
+					try {
+						doc = Jsoup.connect(url).userAgent(WEBSITE_USERAGENT).get();
+					} catch (IOException e) {
+						System.err.println("Не удалось связаться с веб-страницей «" + url + "».");
+						e.printStackTrace();
+						System.exit(1);
+					}
 
-				ObjectMapper objectMapper = new ObjectMapper();
-				JsonFactory jsonFactory = new JsonFactory(objectMapper);
-				File file = new File(OUTPUT_JSON_FILEPATH);
+					System.out.println("Рецепты на " + recipesMealtime + "...");
+					System.out.println();
 
-				try (
-						FileWriter fileWriter = new FileWriter(file);
-						JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter)
-						) {
 					jsonGenerator.useDefaultPrettyPrinter();
 					jsonGenerator.writeStartArray();
 
@@ -185,14 +185,14 @@ public class App {
 					}
 
 					jsonGenerator.writeEndArray();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 
-				if (i+1 < URLS.length) {
-					System.out.println("================================================");
-					System.out.println();
+					if (i+1 < URLS.length) {
+						System.out.println("================================================");
+						System.out.println();
+					}
 				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 
 			System.out.println("Парсинг завершён!");
