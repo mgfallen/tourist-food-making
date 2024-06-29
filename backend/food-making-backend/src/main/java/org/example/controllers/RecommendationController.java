@@ -1,10 +1,7 @@
 package org.example.controllers;
 
 import org.apache.coyote.Response;
-import org.example.DTO.OrderResponseDTO;
-import org.example.DTO.RecParameters;
-import org.example.DTO.RecipeDTO;
-import org.example.DTO.RecommendationDTO;
+import org.example.DTO.*;
 import org.example.entities.Order;
 import org.example.entities.Product;
 import org.example.entities.Recipe;
@@ -34,7 +31,6 @@ public class RecommendationController {
     @PostMapping
     public ResponseEntity<?> getRecommendation(@RequestBody RecParameters parameters){
         Random random = new Random();
-        Order order = new Order();
         Integer persons = parameters.getNumPeople();
         Integer days = parameters.getNumDays();
         String budget = parameters.getBudget();
@@ -56,7 +52,7 @@ public class RecommendationController {
                 .toList());
         System.out.println(breakfastRecipes.size());
         switch (budget){
-            case "малый": {
+            case "маленький": {
                breakfastRecipes.subList(0, (int) (breakfastRecipes.size() * 0.4));
                lunchRecipes.subList(0, (int) (lunchRecipes.size() * 0.4));
                dinnerRecipes.subList(0, (int) (dinnerRecipes.size() * 0.4));
@@ -75,7 +71,7 @@ public class RecommendationController {
             }
         }
         System.out.println(breakfastRecipes.size());
-        List<RecommendationDTO> recs = new ArrayList<>();
+        List<DayRecommendationDTO> recs = new ArrayList<>();
         HashMap<Long, Integer> repetitions = new HashMap<>();
         List<Recipe> breakfastschedule = new ArrayList<>(days);
         List<Recipe> lunchshedule = new ArrayList<>(days);
@@ -128,7 +124,10 @@ public class RecommendationController {
             dayrec.setBreakfast(breakfast);
             dayrec.setLunch(lunch);
             dayrec.setDinner(dinner);
-            recs.add(dayrec);
+            DayRecommendationDTO dayRecommendationDTO = new DayRecommendationDTO();
+            dayRecommendationDTO.setDay(i + 1);
+            dayRecommendationDTO.setRecipes(dayrec);
+            recs.add(dayRecommendationDTO);
         }
 
         List<Recipe> allSchedule = new ArrayList<>();
@@ -137,17 +136,36 @@ public class RecommendationController {
         allSchedule.addAll(dinnershedule);
 
         Map<Long, ProductsList> productMap = new HashMap<>();
-
+        List<ProductsList> allProducts = new ArrayList<>();
         for (Recipe recipe : allSchedule) {
             for (ProductsList product : recipe.getProducts()) {
+                int ind = allProducts.indexOf(product);
+                if (ind > -1) {
+                    allProducts.get(ind).setAmount(allProducts.get(ind).getAmount() + product.getAmount());
+                } else {
+                    ProductsList productsList = new ProductsList();
+                    productsList.setProductId(product.getProductId());
+                    productsList.setAmount(product.getAmount());
+                    allProducts.add(productsList);
+                }
+            }
+        }
+
+        /*for (Recipe recipe : allSchedule) {
+            for (ProductsList product : recipe.getProducts()) {
                 productMap.merge(product.getProductId(), product, (existingProduct, newProduct) -> {
-                    existingProduct.setAmount((existingProduct.getAmount() + newProduct.getAmount())*days*persons);
+                    existingProduct.setAmount(existingProduct.getAmount() + newProduct.getAmount());
                     return existingProduct;
                 });
             }
         }
 
-        List<ProductsList> allProducts = productMap.values().stream().toList();
+        List<ProductsList> allProducts =  productMap.values().stream().toList();*/
+        for (ProductsList productsList:
+             allProducts) {
+            productsList.setAmount(productsList.getAmount()*days*persons);
+        }
+        Order order = new Order();
         order.setProducts(allProducts);
         order.setRecipes(recs);
         orderDataService.createOrder(order);
