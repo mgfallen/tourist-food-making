@@ -20,6 +20,12 @@ services:
       - java-app
       - go-app
       - openapi
+    healthcheck:
+      test: [ "CMD", "nginx", "-t" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
 
   db:
     image: 'postgres:16.3-alpine'
@@ -40,6 +46,7 @@ services:
       timeout: 5s
       retries: 5
 
+  # add later actuator for healtcheck
   java-app:
     container_name: java-app
     build:
@@ -50,6 +57,8 @@ services:
       - db
     ports:
       - "8081:8081"
+    expose:
+      - "8081"
 
 
   go-app:
@@ -70,6 +79,13 @@ services:
       - "80:80"
     env_file:
       - ./frontend/.env
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://158.160.2.48:80" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+
 
 volumes:
   pgdata:
