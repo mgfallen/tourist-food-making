@@ -80,6 +80,7 @@ module.exports = {
       },
       backgroundImage: {
         myGrad: 'linear-gradient(to right, #9580FF,  #FF80A1)',
+        bgGrad: 'linear-gradient(to top, #C93D5F, #241A57)',
       },
       fontFamily: {
         sans: [

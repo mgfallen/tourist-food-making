@@ -30,15 +30,24 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - /home/database-mount/pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
   java-app:
-    image: openjdk:17-jdk-alpine
     container_name: java-app
     build:
       context: ./backend/food-making-backend
-      dockerfile: Dockerfile
     depends_on:
       - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: postgres
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+    ports:
+      - "8081:8081"
+
 
   go-app:
     image: golang:1.16

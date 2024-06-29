@@ -10,6 +10,6 @@ import java.util.HashMap;
 @Setter
 public class RecipeList implements Serializable {
     private String mealtime;
-    private HashMap<Long, String> recipes;
+    private String recipeName;
 
 }

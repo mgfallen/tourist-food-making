@@ -9,7 +9,7 @@ export const Title = ({
   onClick?: () => void
 }) => {
   return (
-    <div className="flex flex-row w-full h-fit items-center justify-between">
+    <div className="flex flex-row w-full h-fit items-center justify-between max-w-[400px] m-auto">
       <Button size="icon" onClick={onClick}>
         <ChevronLeft />
       </Button>
