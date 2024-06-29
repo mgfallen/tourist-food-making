@@ -42,11 +42,10 @@ services:
     environment:
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
-      DB_NAME: postgresg
+      DB_NAME: postgres
       DB_HOST: db
       DB_PORT: 5432
       APP_PORT: 8081
-    restart: unless-stopped
     ports:
       - "8081:8081"
 
