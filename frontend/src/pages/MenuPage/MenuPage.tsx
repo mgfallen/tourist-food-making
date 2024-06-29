@@ -3,12 +3,14 @@ import { Title } from '@/components/Title'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { MenuTab } from './components/MenuTab'
 import { IngredientsTab } from './components/IngredientsTab'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { CircleX, Container, Cross } from 'lucide-react'
 
 export const MenuPage = () => {
   const navigate = useNavigate()
+  const data = useLocation()
+  const recomendations = data.state
   return (
     <Background opacity={true}>
       <div className="flex flex-col w-full items-center">

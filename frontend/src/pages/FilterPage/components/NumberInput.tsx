@@ -7,6 +7,7 @@ type NumberInputProps = Omit<InputProps, 'type'> & {
   min?: number
   max?: number
   step?: number
+  onSelect?: (num: number) => void
 }
 
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
