@@ -200,7 +200,7 @@ public class App {
 			}
 
 			System.out.println("Парсинг рецептов завершён.");
-		} else {
+		} else if (args.length != 0 && args[0].equals("products")) {
 			final String WEBSITE_DOMAIN = "https://yarcheplus.ru";
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
 			final String OUTPUT_JSON_FILEPATH = "out/products.json";
@@ -374,6 +374,10 @@ public class App {
 
 			System.out.println();
 			System.out.println("Парсинг продуктов завершён.");
+		} else {
+			System.err.println("Необходимо ввести подкоманду!");
+			System.err.println("Подкоманды: recipes — парсинг рецептов; products — парсинг продуктов.");
+			System.exit(1);
 		}
 	}
 
