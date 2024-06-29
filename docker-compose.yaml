@@ -32,9 +32,6 @@ services:
       - /home/database-mount/pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-    networks:
-      - postgres
-
 
   java-app:
     container_name: java-app
@@ -42,6 +39,8 @@ services:
       context: ./backend/food-making-backend
     depends_on:
       - db
+    environment:
+      POSTGRES_HOST: db:5432
     ports:
       - "8081:8081"
 
@@ -65,9 +64,6 @@ services:
     env_file:
       - ./frontend/.env
 
-networks:
-  postgres:
-    driver: bridge
 volumes:
   pgdata:
     driver: local
