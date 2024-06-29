@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.util.regex.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.io.IOException;
 import java.io.File;
 import java.io.FileWriter;
@@ -36,9 +38,9 @@ public class App {
 		// Файл слишком большой, вынести подкоманды в отдельные классы
 		if (args.length != 0 && args[0].equals("recipes")) {
 			final String[][] URLS = {
-				{"Завтрак", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[188]=188"}, // TODO 15 не должно быть строкой => вынести константы в отдельный файл конфигурации
-				{"Обед", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[12]=12"},
-				{"Ужин", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[819]=819"}
+					{"Завтрак", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[188]=188"}, // TODO 15 не должно быть строкой => вынести константы в отдельный файл конфигурации
+					{"Обед", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[12]=12"},
+					{"Ужин", "15", "https://1000.menu/catalog/edim-na-prirode?str=&arr_catalog[819]=819"}
 			}; // TODO Из ссылки обедов берутся походные супы
 			final String WEBSITE_DOMAIN = "https://1000.menu";
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"; // Если убрать, то yarcheplus.ru будет выдавать «Извините, ваш браузер не поддерживается»
@@ -55,19 +57,19 @@ public class App {
 
 			System.out.println("Парсинг рецептов...");
 			System.out.println(
-				"[" +
-				URLS[0][0] + ": " + URLS[0][1] + "; " + 
-				URLS[1][0] + ": " + URLS[1][1] + "; " + 
-				URLS[2][0] + ": " + URLS[2][1] + 
-				"]"
-			);
+					"[" +
+							URLS[0][0] + ": " + URLS[0][1] + "; " + 
+							URLS[1][0] + ": " + URLS[1][1] + "; " + 
+							URLS[2][0] + ": " + URLS[2][1] + 
+							"]"
+					);
 			System.out.println();
-			
+
 			for (byte i = 0; i < URLS.length; i++) {
-			    String recipesMealtime = URLS[i][0];
-			    String recipesQuantity = URLS[i][1];
-			    String url = URLS[i][2];
-			    
+				String recipesMealtime = URLS[i][0];
+				String recipesQuantity = URLS[i][1];
+				String url = URLS[i][2];
+
 				Document doc = null;
 				try {
 					doc = Jsoup.connect(url).userAgent(WEBSITE_USERAGENT).get();
@@ -79,7 +81,7 @@ public class App {
 
 				System.out.println("Рецепты на " + recipesMealtime + "...");
 				System.out.println();
-				
+
 				ObjectMapper objectMapper = new ObjectMapper();
 				JsonFactory jsonFactory = new JsonFactory(objectMapper);
 				File file = new File(OUTPUT_JSON_FILEPATH);
@@ -89,7 +91,7 @@ public class App {
 
 					Elements recipes = doc.select(CSSSELECTOR_WEBSITE_RECIPES);
 					List<Element> recipesList = recipes.subList(0, Math.min(recipes.size(), Short.valueOf(recipesQuantity)));
-					
+
 					for (Element recipe : recipesList) {
 						String recipeName = recipe.select(CSSSELECTOR_WEBSITE_RECIPENAME).first().text();
 						String recipeLink = recipe.select(CSSSELECTOR_WEBSITE_RECIPELINK).first().attr("href");
@@ -110,7 +112,7 @@ public class App {
 
 							System.out.println(recipeName);
 							System.out.println("Ингредиенты на 1 порцию:");
-							
+
 							Elements ingredients = recipeWebpage.select(CSSSELECTOR_RECIPE_INGREDIENTS);
 							for (Element ingredient : ingredients) {
 								boolean ingredientRequired = true;
@@ -141,7 +143,8 @@ public class App {
 								}
 
 								float ingredientQuantityPerServing = ingredientQuantity / recipeServings;
-								String ingredientQuantityString = String.valueOf(ingredientQuantityPerServing); // TODO Костыль
+								BigDecimal ingredientQuantityPerServingBD = roundIngredientQuantity(ingredientQuantityPerServing);
+								String ingredientQuantityString = ingredientQuantityPerServingBD.toPlainString(); // TODO Костыль
 
 								jsonGenerator.writeStartObject();
 								if (ingredientRequired == true) {
@@ -174,7 +177,7 @@ public class App {
 					System.out.println();
 				}
 			}
-			
+
 			System.out.println("Парсинг завершён!");
 		} else {
 			final String WEBSITE_DOMAIN = "https://yarcheplus.ru";
@@ -450,5 +453,46 @@ public class App {
 		}
 
 		return ingredientMeasureConverted;
+	}
+
+	/**
+	 * <p>«0.000033333334» → «0.00003» — если дробная часть начинается с нуля, у этой дробной части оставлять первую ненулевую цифру;
+	 * «0.3333334» → «0.33» — если дробная часть начинается с ненулевой цифры, число округляется до двух цифр после разделителя целой и дробной части («до двух знаков после запятой»);
+	 * «135.12» → «135» — если целая часть больше 100, число округляется до целого;
+	 * «0.20» → «0.2»;
+	 * «10.0» → «10».</p>
+	 * @param quantity
+	 * @return
+	 */
+	private static BigDecimal roundIngredientQuantity(float quantity) {
+		BigDecimal bdQuantity = BigDecimal.valueOf(quantity);
+		int intPart = bdQuantity.intValue();
+		BigDecimal fractionalPart = bdQuantity.remainder(BigDecimal.ONE);
+
+		if (intPart > 100) {
+			return bdQuantity.setScale(0, RoundingMode.HALF_UP);
+		}
+
+		// Убираем лишние нули в конце дробной части
+		BigDecimal trimmedBdQuantity = bdQuantity.stripTrailingZeros();
+
+		// Если целое число, возвращаем его без дробной части
+		if (trimmedBdQuantity.scale() <= 0) {
+			return trimmedBdQuantity;
+		}
+
+		String fractionalPartStrTrimmed = fractionalPart.toPlainString().substring(2); // Убираем "0."
+		if (fractionalPartStrTrimmed.startsWith("0")) {
+			int firstNonZeroIndex = 1; // Первый символ после 0
+			while (firstNonZeroIndex < fractionalPartStrTrimmed.length() && fractionalPartStrTrimmed.charAt(firstNonZeroIndex) == '0') {
+				firstNonZeroIndex++;
+			}
+			if (firstNonZeroIndex < fractionalPartStrTrimmed.length()) {
+				return bdQuantity.setScale(firstNonZeroIndex + 1, RoundingMode.HALF_UP).stripTrailingZeros();
+			}
+			return bdQuantity.stripTrailingZeros();
+		} else {
+			return bdQuantity.setScale(2, RoundingMode.HALF_UP).stripTrailingZeros();
+		}
 	}
 }
