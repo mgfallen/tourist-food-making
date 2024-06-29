@@ -153,8 +153,8 @@ public class App {
 								jsonGenerator.writeStartObject();
 								if (ingredientRequired == true) {
 									System.out.println("* " + ingredientName + " — " + ingredientQuantityString + " " + ingredientMeasure);
-									jsonGenerator.writeStringField("recipe_mealtime", recipesMealtime);
-									jsonGenerator.writeStringField("recipe_name", recipeName);
+									jsonGenerator.writeStringField("mealtime", recipesMealtime);
+									jsonGenerator.writeStringField("name", recipeName);
 									jsonGenerator.writeStringField("ingredient_name", ingredientName);
 									jsonGenerator.writeStringField("ingredient_quantity", ingredientQuantityString);
 									jsonGenerator.writeStringField("ingredient_quantity", ingredientMeasure);
@@ -289,8 +289,8 @@ public class App {
 
 							String proteins = null;
 							String fats = null;
-							String carbohydrates = null;
-							String cal = null;
+							String carbonates = null;
+							String kilocal = null;
 							try {
 								proteins = searchDivs(productFoodEnergy, "Белки");
 							} catch (NullPointerException e) {
@@ -302,14 +302,14 @@ public class App {
 								fats = "-";
 							}
 							try {
-								carbohydrates = searchDivs(productFoodEnergy, "Углеводы");
+								carbonates = searchDivs(productFoodEnergy, "Углеводы");
 							} catch (NullPointerException e) {
-								carbohydrates = "-";
+								carbonates = "-";
 							}
 							try {
-								cal = searchDivs(productFoodEnergy, "ккал");
+								kilocal = searchDivs(productFoodEnergy, "ккал");
 							} catch (NullPointerException e) {
-								carbohydrates = "-";
+								kilocal = "-";
 							}
 
 							if (price.endsWith("₽")) {
@@ -325,7 +325,7 @@ public class App {
 								title = matcher.group(1);
 							}
 
-							System.out.println(category.name + "; " + name + "; " + measureRange + "; " + quantity + "; " + price + "; " + link + "; " + proteins + "; " + fats + "; " + carbohydrates + "; " + cal);
+							System.out.println(category.name + "; " + name + "; " + measureRange + "; " + quantity + "; " + price + "; " + link + "; " + proteins + "; " + fats + "; " + carbonates + "; " + kilocal);
 
 							jsonGenerator.writeStartObject();
 
@@ -337,8 +337,8 @@ public class App {
 							jsonGenerator.writeStringField("link", link);
 							jsonGenerator.writeStringField("proteins", proteins);
 							jsonGenerator.writeStringField("fats", fats);
-							jsonGenerator.writeStringField("carbohydrates", carbohydrates);
-							jsonGenerator.writeStringField("calories", cal);
+							jsonGenerator.writeStringField("carbonates", carbonates);
+							jsonGenerator.writeStringField("kilocalories", kilocal);
 
 							jsonGenerator.writeEndObject();
 							jsonGenerator.flush();
