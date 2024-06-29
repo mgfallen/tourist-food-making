@@ -22,12 +22,12 @@ services:
       - openapi
 
   db:
-    image: postgres:16.3
+    image: 'postgres:16.3-alpine'
     container_name: postgres
     environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
     volumes:
       - /home/database-mount/pgdata:/var/lib/postgresql/data
     ports:
@@ -40,11 +40,13 @@ services:
     depends_on:
       - db
     environment:
-      DB_HOST: db
+      DB_USERNAME: ${DB_USERNAME:?dbUserNameNorProvided}
+      DB_PASSWORD: ${DB_PASSWORD:?dbPasswordNotProvided}
+      DB_NAME: ${DB_NAME:?dbNameNotProvided}
+      DB_HOST: example-db
       DB_PORT: 5432
-      DB_NAME: postgres
-      DB_USER: postgres
-      DB_PASSWORD: postgres
+      APP_PORT: ${APP_PORT:?appPortNotProvided}
+    restart: unless-stopped
     ports:
       - "8081:8081"
 
