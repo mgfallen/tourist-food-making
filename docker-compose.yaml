@@ -8,23 +8,23 @@ services:
     volumes:
       - ./swagger/swagger.yaml:/usr/share/nginx/html/swagger.yaml
 
-  nginx:
-    image: nginx:1.27.0
-    container_name: nginx
-    ports:
-      - "81:81"
-    volumes:
-      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./swagger/swagger_html:/usr/share/nginx/html/swagger
-    depends_on:
-      - java-app
-      - go-app
-      - openapi
-    healthcheck:
-      test: [ "CMD", "nginx", "-t" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+#  nginx:
+#    image: nginx:1.27.0
+#    container_name: nginx
+#    ports:
+#      - "81:81"
+#    volumes:
+#      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+#      - ./swagger/swagger_html:/usr/share/nginx/html/swagger
+#    depends_on:
+#      - java-app
+#      - go-app
+#      - openapi
+#    healthcheck:
+#      test: [ "CMD", "nginx", "-t" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
 
 
   db:
