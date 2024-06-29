@@ -44,7 +44,7 @@ public class App {
 			};
 			final String WEBSITE_DOMAIN = "https://1000.menu";
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
-			final String OUTPUT_JSON_FILEPATH = "recipes.json";
+			final String OUTPUT_JSON_FILEPATH = "out/recipes.json";
 			// При изменении CSS-селекторов учитывать обфускацию DOM
 			final String CSSSELECTOR_WEBSITE_RECIPES = ".cooking-block > .cn-item:not(.ads_enabled)";
 			final String CSSSELECTOR_WEBSITE_RECIPENAME = "a.h5";
@@ -67,7 +67,10 @@ public class App {
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonFactory jsonFactory = new JsonFactory(objectMapper);
 			File file = new File(OUTPUT_JSON_FILEPATH);
-
+			if (file.getParentFile() != null) {
+			    file.getParentFile().mkdirs();
+			}
+			
 			try ( FileWriter fileWriter = new FileWriter(file);
 					JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter))
 			{
@@ -200,7 +203,7 @@ public class App {
 		} else {
 			final String WEBSITE_DOMAIN = "https://yarcheplus.ru";
 			final String WEBSITE_USERAGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36";
-			final String OUTPUT_JSON_FILEPATH = "products.json";
+			final String OUTPUT_JSON_FILEPATH = "out/products.json";
 			// При изменении CSS-селекторов учитывать обфускацию DOM
 			final String CSSSELECTOR_WORKZONE_PRODUCTS = "#app-content > div > div:last-of-type > div:nth-of-type(2) > div:first-of-type > div:last-of-type > div:last-of-type > div:last-of-type";
 			final String CSSSELECTOR_WORKZONE_PRODUCTDIALOG = "main#app > div:not(#app-content) > div > div[role=\"dialog\"] div:has(> div > h1)";
@@ -247,6 +250,9 @@ public class App {
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonFactory jsonFactory = new JsonFactory(objectMapper);
 			File file = new File(OUTPUT_JSON_FILEPATH);
+			if (file.getParentFile() != null) {
+			    file.getParentFile().mkdirs();
+			}
 
 			try (FileWriter fileWriter = new FileWriter(file);
 					JsonGenerator jsonGenerator = jsonFactory.createGenerator(fileWriter))
