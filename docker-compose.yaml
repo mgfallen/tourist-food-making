@@ -31,6 +31,9 @@ services:
       POSTGRES_HOST: "db:5432"
     volumes:
       - /home/database-mount/pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
 
   java-app:
     container_name: java-app
