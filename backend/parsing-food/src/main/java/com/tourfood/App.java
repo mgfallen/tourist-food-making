@@ -138,14 +138,14 @@ public class App {
 
 								jsonGenerator.writeStartObject();
 								if (ingredientRequired == true) {
-									System.out.println(ingredientName + " — " + ingredientQuantityString + " " + ingredientMeasure);
+									System.out.println("* " + ingredientName + " — " + ingredientQuantityString + " " + ingredientMeasure);
 									jsonGenerator.writeStringField("recipe_mealtime", recipesMealtime);
 									jsonGenerator.writeStringField("recipe_name", recipeName);
 									jsonGenerator.writeStringField("ingredient_name", ingredientName);
 									jsonGenerator.writeStringField("ingredient_quantity", ingredientQuantityString);
 									jsonGenerator.writeStringField("ingredient_quantity", ingredientMeasure);
 								} else {
-									System.out.println(ingredientName);
+									System.out.println("* " + ingredientName);
 									jsonGenerator.writeStringField("ingredient_name", ingredientName);
 								}
 								jsonGenerator.writeEndObject();
@@ -417,6 +417,26 @@ public class App {
 				case "л":
 					ingredientMeasureConverted[0] = String.valueOf(ingredientQuantity *= 1000);
 					ingredientMeasureConverted[1] = "мл";
+					break;
+				case "чайн.л.":
+					ingredientMeasureConverted[0] = String.valueOf(ingredientQuantity *= 5);
+					ingredientMeasureConverted[1] = "мл";
+					break;
+				case "десерт.л.":
+					ingredientMeasureConverted[0] = String.valueOf(ingredientQuantity *= 10);
+					ingredientMeasureConverted[1] = "мл";
+					break;
+				case "стол.л.":
+					ingredientMeasureConverted[0] = String.valueOf(ingredientQuantity *= 15);
+					ingredientMeasureConverted[1] = "мл";
+					break;
+				case "стак.":
+					ingredientMeasureConverted[0] = String.valueOf(ingredientQuantity *= 200);
+					ingredientMeasureConverted[1] = "мл";
+					break;
+				case "зубч.":
+				case "листк.":
+					ingredientMeasureConverted[1] = "шт.";
 					break;
 				}
 			}
